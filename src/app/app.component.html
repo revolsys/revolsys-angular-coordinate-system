@@ -1,20 +1,45 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<mat-card [formGroup]="form">
+  <div>
+    <mat-form-field>
+      <input matInput formControlName="longitude1" placeholder="Longitude">
+      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
+      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
+    </mat-form-field>
+    
+    <mat-form-field>
+      <input matInput formControlName="latitude1" placeholder="Latitude">
+      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
+      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
+     </mat-form-field>
+  </div>
+  
+  <mat-divider style="margin-top: 1.5em"></mat-divider>
+  
+  <div style="margin-top: 2em">
+    <mat-form-field>
+      <input matInput formControlName="longitude2" placeholder="Longitude">
+      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
+      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
+     </mat-form-field>
+    
+    <mat-form-field>
+      <input matInput formControlName="latitude2" placeholder="Latitude">
+      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
+      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
+    </mat-form-field>
+  </div>
+ </mat-card>
 
+   
+  <mat-card *ngIf="result">
+    <mat-form-field>
+      <input matInput [(ngModel)]="result[1]" placeholder="Azimuth 1-2" >
+     </mat-form-field>
+    <mat-form-field>
+      <input matInput [(ngModel)]="result[2]" placeholder="Azimuth 2-1" >
+     </mat-form-field>
+    <mat-form-field>
+      <input matInput [(ngModel)]="result[0]" placeholder="Distance" >
+     </mat-form-field>
+  </mat-card>
+ 
