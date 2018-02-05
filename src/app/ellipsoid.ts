@@ -136,7 +136,11 @@ export class Ellipsoid {
 
     const angle2 = Math.atan2(sinalpha, -tmp);
 
-    return [lon2, lat2, angle2];
+    return [
+      Angle.toDegrees(lon2),
+      Angle.toDegrees(lat2),
+      Angle.toDegrees(angle2)
+    ];
   }
 
 }

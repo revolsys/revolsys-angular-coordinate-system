@@ -1,45 +1,15 @@
-<mat-card [formGroup]="form">
-  <div>
-    <mat-form-field>
-      <input matInput formControlName="longitude1" placeholder="Longitude">
-      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
-      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
-    </mat-form-field>
-    
-    <mat-form-field>
-      <input matInput formControlName="latitude1" placeholder="Latitude">
-      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
-      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
-     </mat-form-field>
-  </div>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
   
-  <mat-divider style="margin-top: 1.5em"></mat-divider>
+  <button mat-button [matMenuTriggerFor]="menuEllipsoid">Ellipsoid</button>
   
-  <div style="margin-top: 2em">
-    <mat-form-field>
-      <input matInput formControlName="longitude2" placeholder="Longitude">
-      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
-      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
-     </mat-form-field>
-    
-    <mat-form-field>
-      <input matInput formControlName="latitude2" placeholder="Latitude">
-      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
-      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
-    </mat-form-field>
-  </div>
- </mat-card>
+  </mat-toolbar-row>
+</mat-toolbar>
 
-   
-  <mat-card *ngIf="result">
-    <mat-form-field>
-      <input matInput [(ngModel)]="result[1]" placeholder="Azimuth 1-2" >
-     </mat-form-field>
-    <mat-form-field>
-      <input matInput [(ngModel)]="result[2]" placeholder="Azimuth 2-1" >
-     </mat-form-field>
-    <mat-form-field>
-      <input matInput [(ngModel)]="result[0]" placeholder="Distance" >
-     </mat-form-field>
-  </mat-card>
- 
+<router-outlet>
+</router-outlet>
+
+  <mat-menu #menuEllipsoid="matMenu">
+    <a href="ellipsoid/direct" mat-menu-item >Compute Lat/Lon</a>
+    <a href="ellipsoid/inverse" mat-menu-item>Compute Distance/Azimuth</a>
+  </mat-menu>
