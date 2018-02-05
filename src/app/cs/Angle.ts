@@ -1,4 +1,32 @@
 export class Angle {
+  static RAD_DEGREE = 0.01745329251994328;
+
+
+  static angleDegrees(x1: number, y1: number, x2: number, y2: number): number {
+    const width = x2 - x1;
+    const height = y2 - y1;
+    if (width === 0) {
+      if (height < 0) {
+        return 270;
+      } else {
+        return 90;
+      }
+    } else if (height === 0) {
+      if (width < 0) {
+        return 180;
+      } else {
+        return 0;
+      }
+    }
+    const arctan = Math.atan(height / width);
+    const degrees = Angle.toDegrees(arctan);
+    if (width < 0) {
+      return 180 + degrees;
+    } else {
+      return (360 + degrees) % 360;
+    }
+  }
+
   static toRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
   }

@@ -45,14 +45,15 @@ export class TransverseMercator extends ProjCS {
   private ePrimeSqTimes8: number;
 
   constructor(
-    private geoCs: GeoCS,
+    name: string,
+    geoCs: GeoCS,
     private latitude_of_origin: number,
     private central_meridan: number,
     private scale_factor: number,
     private false_easting: number,
     private false_northing: number,
   ) {
-    super(geoCs);
+    super(name, geoCs);
     const latitudeOfNaturalOrigin = latitude_of_origin;
     const centralMeridian = central_meridan;
     const scaleFactor = scale_factor;

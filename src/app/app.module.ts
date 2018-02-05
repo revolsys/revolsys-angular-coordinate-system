@@ -13,6 +13,7 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatMenuModule,
+  MatSelectModule,
   MatToolbarModule,
   MatTooltipModule
 } from '@angular/material';
@@ -23,13 +24,17 @@ import {CoordinateFromDistanceAngleComponent} from './coordinate-from-distance-a
 
 
 import {AppRoutingModule} from './app-routing.module';
+import {CsFieldComponent} from './cs-field/cs-field.component';
+import { PointFieldComponent } from './point-field/point-field.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     DistanceAngleComponent,
-    CoordinateFromDistanceAngleComponent
+    CoordinateFromDistanceAngleComponent,
+    CsFieldComponent,
+    PointFieldComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +47,7 @@ import {AppRoutingModule} from './app-routing.module';
     MatFormFieldModule,
     MatInputModule,
     MatMenuModule,
+    MatSelectModule,
     MatToolbarModule,
     MatTooltipModule,
     AppRoutingModule

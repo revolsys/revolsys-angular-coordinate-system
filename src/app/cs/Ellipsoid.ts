@@ -2,9 +2,9 @@ import {Angle} from './Angle';
 
 export class Ellipsoid {
 
-  public static NAD83 = new Ellipsoid(6378137, 298.257222101);
+  static NAD83 = new Ellipsoid(6378137, 298.257222101);
 
-  public static WGS84 = new Ellipsoid(6378137, 298.257223563);
+  static WGS84 = new Ellipsoid(6378137, 298.257223563);
 
   f: number; // flattening
 
@@ -35,16 +35,16 @@ export class Ellipsoid {
   }
 
   // https://www.movable-type.co.uk/scripts/latlong-vincenty.html
-  distanceAndAzimuth(lon1: number, lat1: number, lon2: number, lat2: number): number[] {
+  distanceAndAngle(x1: number, y1: number, x2: number, y2: number): number[] {
     const f = this.f;
     const a = this.a;
     const b = this.b;
 
-    lon1 = Angle.toRadians(lon1);
-    lat1 = Angle.toRadians(lat1);
+    const lon1 = Angle.toRadians(x1);
+    const lat1 = Angle.toRadians(y1);
 
-    lon2 = Angle.toRadians(lon2);
-    lat2 = Angle.toRadians(lat2);
+    const lon2 = Angle.toRadians(x2);
+    const lat2 = Angle.toRadians(y2);
 
     const deltaLon = lon2 - lon1;
     const tanU1 = (1 - f) * Math.tan(lat1), cosU1 = 1 / Math.sqrt((1 + tanU1 * tanU1)), sinU1 = tanU1 * cosU1;

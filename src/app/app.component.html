@@ -1,7 +1,8 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
   
-  <button mat-button [matMenuTriggerFor]="menuEllipsoid">Ellipsoid</button>
+    <a routerLink="point-offset" mat-button >Point Offset</a>
+    <a routerLink="distance-angle" mat-button>Distance/Azimuth</a>
   
   </mat-toolbar-row>
 </mat-toolbar>
@@ -10,6 +11,4 @@
 </router-outlet>
 
   <mat-menu #menuEllipsoid="matMenu">
-    <a href="ellipsoid/direct" mat-menu-item >Compute Lat/Lon</a>
-    <a href="ellipsoid/inverse" mat-menu-item>Compute Distance/Azimuth</a>
   </mat-menu>

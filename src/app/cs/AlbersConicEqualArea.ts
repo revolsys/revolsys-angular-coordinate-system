@@ -28,6 +28,7 @@ export class AlbersConicEqualArea extends ProjCS {
   y0: number;
 
   constructor(
+    name: string,
     geoCs: GeoCS,
     standard_parallel_1: number,
     standard_parallel_2: number,
@@ -36,7 +37,7 @@ export class AlbersConicEqualArea extends ProjCS {
     false_easting: number,
     false_northing: number
   ) {
-    super(geoCs);
+    super(name, geoCs);
     const firstStandardParallel = standard_parallel_1;
     const secondStandardParallel = standard_parallel_2;
     const centralMeridian = longitude_of_center;

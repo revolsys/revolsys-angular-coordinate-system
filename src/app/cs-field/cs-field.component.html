@@ -1,0 +1,5 @@
+<mat-form-field>
+  <mat-select placeholder="Coordinate System">
+    <mat-option *ngFor="let cs of coordinateSystems" [value]="cs" >{{cs.name}}</mat-option>
+  </mat-select>
+</mat-form-field>

@@ -5,9 +5,9 @@ import {CoordinateFromDistanceAngleComponent} from './coordinate-from-distance-a
 import {DistanceAngleComponent} from './distance-angle/distance-angle.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'ellipsoid/inverse', pathMatch: 'full'},
-  {path: 'ellipsoid/inverse', component: DistanceAngleComponent},
-  {path: 'ellipsoid/direct', component: CoordinateFromDistanceAngleComponent},
+  {path: '', redirectTo: 'distance-angle', pathMatch: 'full'},
+  {path: 'distance-angle', component: DistanceAngleComponent},
+  {path: 'point-offset', component: CoordinateFromDistanceAngleComponent},
 
 ];
 

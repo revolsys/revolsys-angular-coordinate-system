@@ -1,0 +1,29 @@
+<mat-card *ngIf="isGeographic; else projected" [formGroup]="form">
+  <mat-card-subtitle >{{title}}</mat-card-subtitle>
+ 
+  <mat-form-field>
+    <input matInput formControlName="y" placeholder="Latitude">
+    <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
+    or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput formControlName="x" placeholder="Longitude">
+    <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
+    or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
+  </mat-form-field>
+ </mat-card>
+<ng-template #projected>
+<mat-card [formGroup]="form">
+  <mat-card-subtitle >{{title}}</mat-card-subtitle>
+  <mat-form-field>
+    <input matInput formControlName="x" placeholder="X (Easting)">
+    <mat-hint>metres</mat-hint>
+  </mat-form-field>
+  
+  <mat-form-field>
+    <input matInput formControlName="y" placeholder="Y (Northing)">
+    <mat-hint>metres</mat-hint>
+  </mat-form-field>
+</mat-card>
+</ng-template>
