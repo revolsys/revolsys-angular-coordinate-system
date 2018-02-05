@@ -1,4 +1,4 @@
-import {Angle} from './angle';
+import {Angle} from './Angle';
 
 export class Ellipsoid {
 
@@ -10,12 +10,28 @@ export class Ellipsoid {
 
   b: number; // semiMinorAxis
 
+  eSq = this.f + this.f - this.f * this.f;
+
+  e = Math.sqrt(this.eSq);
+
   constructor(
     public a: number, // semiMajorAxis
     inverseFlattening: number
   ) {
     this.f = 1 / inverseFlattening;
     this.b = this.a - this.a * this.f;
+  }
+
+  get eccentricitySquared(): number {
+    return this.eSq;
+  }
+
+  get eccentricity(): number {
+    return this.e;
+  }
+
+  get semiMajorAxis(): number {
+    return this.a;
   }
 
   // https://www.movable-type.co.uk/scripts/latlong-vincenty.html
@@ -142,5 +158,4 @@ export class Ellipsoid {
       Angle.toDegrees(angle2)
     ];
   }
-
 }

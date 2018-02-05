@@ -4,8 +4,8 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
-import {Angle} from '../angle';
-import {Ellipsoid} from '../ellipsoid';
+import {Angle} from '../cs/Angle';
+import {Ellipsoid} from '../cs/Ellipsoid';
 
 @Component({
   selector: 'app-coordinate-from-distance-angle',
