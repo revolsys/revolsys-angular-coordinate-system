@@ -22,23 +22,31 @@ export class PointFieldComponent implements OnInit {
 
   form: FormGroup;
 
+  @Input()
+  editable = true;
+
   get isGeographic(): boolean {
     return this.cs instanceof GeoCS;
   }
 
   @Input()
-  title: string;
+  prefix: string;
 
   constructor( @Inject(FormBuilder) private fb: FormBuilder) {
   }
 
   ngOnInit(): void {
+    if (this.prefix) {
+      this.prefix = this.prefix.trim() + ' ';
+    }
     const value = this.parentForm.value[this.name];
     this.form = this.fb.group({
       'x': null,
       'y': null
     });
-    this.form.patchValue(value);
+    if (value) {
+      this.form.patchValue(value);
+    }
     this.parentForm.controls[this.name] = null;
     this.parentForm.addControl(this.name, this.form);
     const newValue = {};

@@ -20,7 +20,7 @@ import {
 
 import {AppComponent} from './app.component';
 import {DistanceAngleComponent} from './distance-angle/distance-angle.component';
-import {CoordinateFromDistanceAngleComponent} from './coordinate-from-distance-angle/coordinate-from-distance-angle.component';
+import {PointOffsetComponent} from './point-offset/point-offset.component';
 
 
 import {AppRoutingModule} from './app-routing.module';
@@ -32,7 +32,7 @@ import { PointFieldComponent } from './point-field/point-field.component';
   declarations: [
     AppComponent,
     DistanceAngleComponent,
-    CoordinateFromDistanceAngleComponent,
+    PointOffsetComponent,
     CsFieldComponent,
     PointFieldComponent
   ],

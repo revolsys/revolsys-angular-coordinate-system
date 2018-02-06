@@ -27,11 +27,32 @@ export class Angle {
     }
   }
 
+  static angleCompassDegrees(x1: number, y1: number, x2: number, y2: number): number {
+    return Angle.toCompass(Angle.angleDegrees(x1, y1, x2, y2));
+  }
+
+  static toCompass(degrees: number): number {
+    return (450 - degrees) % 360;
+  }
+
+  static toCartesian(degrees: number): number {
+    return (450 - degrees) % 360;
+  }
+
   static toRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
   }
 
   static toDegrees(radians: number): number {
+    const degrees = radians * 180 / Math.PI;
+    if (degrees < 0) {
+      return 360 + degrees;
+    } else {
+      return degrees;
+    }
+  }
+
+  static toDegrees180(radians: number): number {
     return radians * 180 / Math.PI;
   }
 

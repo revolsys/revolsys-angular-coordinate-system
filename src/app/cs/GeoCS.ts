@@ -6,8 +6,8 @@ export class GeoCS extends CS {
   private _df: number;
   constructor(
     name: string,
-    private _e: Ellipsoid,
-    private _pm: number,
+    public readonly ellipsoid: Ellipsoid,
+    public readonly primeMeridian: number,
     private _rf: number
   ) {
     super(name);
@@ -22,16 +22,21 @@ export class GeoCS extends CS {
     return this._rf;
   }
 
-  get ellipsoid(): Ellipsoid {
-    return this._e;
+
+  angle(x1: number, y1: number, x2: number, y2: number): number {
+    return this.ellipsoid.angle(x1, y1, x2, y2);
   }
 
-  get primeMeridian(): number {
-    return this._pm;
+  distance(x1: number, y1: number, x2: number, y2: number) {
+    return this.ellipsoid.distance(x1, y1, x2, y2);
   }
 
-  distanceAndAngle(x1: number, y1: number, x2: number, y2: number): number[] {
-    return this._e.distanceAndAngle(x1, y1, x2, y2);
+  makePrecise(value: number): number {
+    return Math.round(value * 10000000) / 10000000.0;
+  }
+
+  pointOffset(x: number, y: number, distance: number, angle: number): number[] {
+    return this.ellipsoid.pointOffset(x, y, distance, angle);
   }
 
   toDegrees(value: number): number {
@@ -40,6 +45,10 @@ export class GeoCS extends CS {
     } else {
       return value * this._df;
     }
+  }
+
+  toNumber(text: string): number {
+    return Angle.toDecimalDegrees(text);
   }
 
   toRadians(value: number): number {

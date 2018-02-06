@@ -8,6 +8,7 @@ import {Angle} from '../cs/Angle';
 import {Ellipsoid} from '../cs/Ellipsoid';
 import {GeoCS} from '../cs/GeoCS';
 import {CSI} from '../cs/CSI';
+import {Numbers} from '../cs/Numbers';
 
 @Component({
   selector: 'app-distance-angle',
@@ -31,7 +32,6 @@ export class DistanceAngleComponent implements OnInit {
     this.createForm();
   }
 
-
   private createForm() {
     this.form = this.fb.group({
       fromPoint: {
@@ -45,29 +45,22 @@ export class DistanceAngleComponent implements OnInit {
       cs: this.cs
     });
     this.form.valueChanges.subscribe(data => {
-      const cs = data.cs;
       this.cs = data.cs;
-      let x1 = data.fromPoint.x;
-      let y1 = data.fromPoint.y;
-      let x2 = data.toPoint.x;
-      let y2 = data.toPoint.y;
-      if (cs instanceof GeoCS) {
-        x1 = Angle.toDecimalDegrees(x1);
-        y1 = Angle.toDecimalDegrees(y1);
-        x2 = Angle.toDecimalDegrees(x2);
-        y2 = Angle.toDecimalDegrees(y2);
-      }
-      if (x1 && y1 && x2 && y2) {
+      const x1 = this.cs.toNumber(data.fromPoint.x);
+      const y1 = this.cs.toNumber(data.fromPoint.y);
+      const x2 = this.cs.toNumber(data.toPoint.x);
+      const y2 = this.cs.toNumber(data.toPoint.y);
+      if (x1 != null && y1 != null && x2 != null && y2 != null) {
         this.hasResult = true;
-        const result = cs.distanceAndAngle(x1, y1, x2, y2);
-        this.distance = result[0];
-        this.azimuth1 = result[1];
-        this.azimuth2 = result[2];
+        this.distance = Numbers.makePrecise(1000, this.cs.distance(x1, y1, x2, y2));
+        this.azimuth1 = Numbers.makePrecise(10000000, this.cs.angle(x1, y1, x2, y2));
+        this.azimuth2 = Numbers.makePrecise(10000000, this.cs.angle(x2, y2, x1, y1));
       } else {
         this.hasResult = false;
       }
     });
   }
+
   ngOnInit() {
     this.form.patchValue({
       fromPoint: {

@@ -1,2 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.mat-form-field {
+  display: flex;
+  flex: 1;
+}
+
+.flexRowToColumn {
+  display:flex;
+  flex-direction:row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: -5px;
+}
+.flexRowToColumn .mat-form-field {
+  margin: 5px;
+}
+
+@media (max-width: 768px) {
+  .flexRowToColumn {
+    flex-direction:column;
+    align-items: stretch;
+  }
+}

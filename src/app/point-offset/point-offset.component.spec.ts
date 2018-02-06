@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CoordinateFromDistanceAngleComponent } from './coordinate-from-distance-angle.component';
+import { CoordinateFromDistanceAngleComponent } from './point-offset.component';
 
 describe('CoordinateFromDistanceAngleComponent', () => {
   let component: CoordinateFromDistanceAngleComponent;
