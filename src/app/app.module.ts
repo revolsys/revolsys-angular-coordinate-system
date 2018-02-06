@@ -26,6 +26,7 @@ import {PointOffsetComponent} from './point-offset/point-offset.component';
 import {AppRoutingModule} from './app-routing.module';
 import {CsFieldComponent} from './cs-field/cs-field.component';
 import { PointFieldComponent } from './point-field/point-field.component';
+import { CoordinateSystemConversionComponent } from './coordinate-system-conversion/coordinate-system-conversion.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { PointFieldComponent } from './point-field/point-field.component';
     DistanceAngleComponent,
     PointOffsetComponent,
     CsFieldComponent,
-    PointFieldComponent
+    PointFieldComponent,
+    CoordinateSystemConversionComponent
   ],
   imports: [
     BrowserModule,

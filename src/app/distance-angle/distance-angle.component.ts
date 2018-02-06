@@ -29,10 +29,6 @@ export class DistanceAngleComponent implements OnInit {
   cs = CSI.NAD83;
 
   constructor(private fb: FormBuilder) {
-    this.createForm();
-  }
-
-  private createForm() {
     this.form = this.fb.group({
       fromPoint: {
         x: null,

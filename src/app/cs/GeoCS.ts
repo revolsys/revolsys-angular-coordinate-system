@@ -1,6 +1,7 @@
 import {Angle} from './Angle';
 import {CS} from './CS';
 import {Ellipsoid} from './Ellipsoid';
+import {ProjCS} from './ProjCS';
 
 export class GeoCS extends CS {
   private _df: number;
@@ -25,6 +26,15 @@ export class GeoCS extends CS {
 
   angle(x1: number, y1: number, x2: number, y2: number): number {
     return this.ellipsoid.angle(x1, y1, x2, y2);
+  }
+
+  convertPoint(cs: CS, x: number, y: number): number[] {
+    // No datum conversion
+    if (this === cs || cs == null || cs instanceof GeoCS) {
+      return [x, y];
+    } else {
+      return cs.project(x, y);
+    }
   }
 
   distance(x1: number, y1: number, x2: number, y2: number) {

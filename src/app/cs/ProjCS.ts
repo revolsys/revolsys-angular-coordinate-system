@@ -16,6 +16,21 @@ export class ProjCS extends CS {
     return Angle.angleCompassDegrees(x1, y1, x2, y2);
   }
 
+  public convertPoint(cs: CS, x: number, y: number): number[] {
+    if (this === cs) {
+      return [x, y];
+    } else if (cs instanceof GeoCS) {
+      return this.inverse(x, y);
+    } else if (cs instanceof ProjCS) {
+      const lonLat = this.inverse(x, y);
+      // No datum conversion
+      const projCs = <ProjCS>cs;
+      return projCs.project(lonLat[0], lonLat[1]);
+    } else {
+      return null;
+    }
+  }
+
   distance(x1: number, y1: number, x2: number, y2: number): number {
     const dx = x2 - x1;
     const dy = y2 - y1;
@@ -39,5 +54,14 @@ export class ProjCS extends CS {
   makePrecise(value: number): number {
     return Math.round(value * 1000) / 1000.0;
   }
+
+  public inverse(x: number, y: number): number[] {
+    throw new Error('Inverse operation not supported');
+  }
+
+  public project(lon: number, lat: number): number[] {
+    throw new Error('Project operation not supported');
+  }
+
 
 }

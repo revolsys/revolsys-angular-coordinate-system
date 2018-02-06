@@ -11,9 +11,9 @@ export class Ellipsoid {
 
   readonly b: number; // semiMinorAxis
 
-  readonly eSq = this.f + this.f - this.f * this.f;
+  readonly eSq: number;
 
-  readonly e = Math.sqrt(this.eSq);
+  readonly e: number;
 
   constructor(
     public readonly a: number, // semiMajorAxis
@@ -21,6 +21,8 @@ export class Ellipsoid {
   ) {
     this.f = 1 / inverseFlattening;
     this.b = this.a - this.a * this.f;
+    this.eSq = this.f + this.f - this.f * this.f;
+    this.e = Math.sqrt(this.eSq);
   }
 
   get eccentricitySquared(): number {

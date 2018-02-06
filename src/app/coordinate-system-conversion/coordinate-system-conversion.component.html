@@ -1,0 +1,26 @@
+<mat-card>
+   <mat-card-title-group>
+     <mat-card-title>Coordinate System Conversion</mat-card-title>
+  </mat-card-title-group>
+  <mat-card-content>
+    <p>Convert the coordinates from the source to target coordinate system.</p>
+  </mat-card-content>
+</mat-card>
+<mat-card [formGroup]="form">
+  <div class="flexRowToColumn">
+    <app-cs-field formControlName="sourceCs" placeholder="Source Coordinate System"></app-cs-field>
+    <app-cs-field formControlName="targetCs" placeholder="Target Coordinate System"></app-cs-field>
+  </div>
+
+  <app-point-field [parentForm]="form" name="sourcePoint" [cs]="sourceCs" prefix="Source">
+  </app-point-field>  
+  
+</mat-card>
+
+<mat-card *ngIf="hasResult">
+  <mat-card-title>Result</mat-card-title>
+  <div class="flexRowToColumn"> 
+    <app-point-field [parentForm]="resultForm" name="targetPoint" [cs]="targetCs" prefix="Target" editable="false">
+    </app-point-field>  
+  </div>
+</mat-card>
