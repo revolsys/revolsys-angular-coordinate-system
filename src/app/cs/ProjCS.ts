@@ -6,10 +6,11 @@ import {Numbers} from './Numbers';
 
 export class ProjCS extends CS {
   constructor(
+    id: number,
     name: string,
     public geoCS: GeoCS
   ) {
-    super(name);
+    super(id, name);
   }
 
   angle(x1: number, y1: number, x2: number, y2: number): number {

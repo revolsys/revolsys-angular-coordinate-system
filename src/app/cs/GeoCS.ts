@@ -6,12 +6,13 @@ import {ProjCS} from './ProjCS';
 export class GeoCS extends CS {
   private _df: number;
   constructor(
+    id: number,
     name: string,
     public readonly ellipsoid: Ellipsoid,
     public readonly primeMeridian: number,
     private _rf: number
   ) {
-    super(name);
+    super(id, name);
     if (_rf = Angle.RAD_DEGREE) {
       this._df = 1;
     } else {
