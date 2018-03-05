@@ -4,6 +4,7 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
+import {AlbersConicEqualArea} from '../cs/AlbersConicEqualArea';
 import {Angle} from '../cs/Angle';
 import {Ellipsoid} from '../cs/Ellipsoid';
 import {GeoCS} from '../cs/GeoCS';
@@ -11,7 +12,7 @@ import {CSI} from '../cs/CSI';
 import {Numbers} from '../cs/Numbers';
 
 @Component({
-  selector: 'app-coordinate-system-conversion',
+  selector: 'rs-cs-coordinate-system-conversion',
   templateUrl: './coordinate-system-conversion.component.html',
   styleUrls: ['./coordinate-system-conversion.component.css']
 })

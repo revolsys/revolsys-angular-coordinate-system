@@ -5,7 +5,7 @@ import {CSI} from '../cs/CSI';
 import {GeoCS} from '../cs/GeoCS';
 
 @Component({
-  selector: 'app-point-field',
+  selector: 'rs-cs-point-field',
   templateUrl: './point-field.component.html',
   styleUrls: ['./point-field.component.css']
 })
@@ -25,6 +25,9 @@ export class PointFieldComponent implements OnInit {
   @Input()
   editable = true;
 
+  @Input()
+  floatLabel = 'auto';
+
   get isGeographic(): boolean {
     return this.cs instanceof GeoCS;
   }
@@ -40,17 +43,16 @@ export class PointFieldComponent implements OnInit {
       this.prefix = this.prefix.trim() + ' ';
     }
     const value = this.parentForm.value[this.name];
-    this.form = this.fb.group({
-      'x': null,
-      'y': null
-    });
-    if (value) {
-      this.form.patchValue(value);
+    this.form = <FormGroup>this.parentForm.controls[this.name];
+    if (!this.form) {
+      this.form = this.fb.group({
+        'x': null,
+        'y': null
+      });
+      this.parentForm.addControl(this.name, this.form);
+      const newValue = {};
+      newValue[this.name] = this.form.value;
+      this.parentForm.patchValue(newValue);
     }
-    this.parentForm.controls[this.name] = null;
-    this.parentForm.addControl(this.name, this.form);
-    const newValue = {};
-    newValue[this.name] = this.form.value;
-    this.parentForm.patchValue(newValue);
   }
 }

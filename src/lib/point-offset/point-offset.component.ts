@@ -10,7 +10,7 @@ import {GeoCS} from '../cs/GeoCS';
 import {CSI} from '../cs/CSI';
 
 @Component({
-  selector: 'app-point-offset',
+  selector: 'rs-cs-point-offset',
   templateUrl: './point-offset.component.html',
   styleUrls: ['./point-offset.component.css']
 })

@@ -6,7 +6,7 @@ import {CS} from '../cs/CS';
 import {CSI} from '../cs/CSI';
 
 @Component({
-  selector: 'app-cs-field',
+  selector: 'rs-cs-coordinate-system-field',
   templateUrl: './cs-field.component.html',
   styleUrls: ['./cs-field.component.css'],
   providers: [
@@ -18,13 +18,16 @@ import {CSI} from '../cs/CSI';
   ]
 })
 export class CsFieldComponent implements OnInit, ControlValueAccessor {
-  coordinateSystems: CS[] = [CSI.NAD83, CSI.BC_ALBERS, CSI.utmN(7), CSI.utmN(8), CSI.utmN(9), CSI.utmN(10), CSI.utmN(11)];
+  coordinateSystems: CS[] = [CSI.NAD83, CSI.utmN(7), CSI.utmN(8), CSI.utmN(9), CSI.utmN(10), CSI.utmN(11)];
 
   @ViewChild(MatSelect)
   select: MatSelect;
 
   @Input()
   placeholder = 'Coordinate System';
+
+  @Input()
+  floatLabel = 'auto';
 
   constructor() {
   }

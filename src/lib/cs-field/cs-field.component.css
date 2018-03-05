@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  flex: 0;
+  flex-direction: column;
+}
+.mat-form-field {
+  max-width: 180px;
+}
+@media (max-width: 768px) {
+  :host {
+    align-items: stretch;
+    flex: 1;
+  }
+	.mat-form-field {
+	  max-width: inherit;
+	}
+}

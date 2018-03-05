@@ -16,14 +16,14 @@
   </mat-card-content>
 </mat-card>
 <mat-card [formGroup]="form">
-  <app-cs-field formControlName="cs">
-  </app-cs-field>
+  <rs-cs-coordinate-system-field formControlName="cs">
+  </rs-cs-coordinate-system-field>
 
-  <app-point-field [parentForm]="form" name="fromPoint" [cs]="cs" prefix="From">
-  </app-point-field>  
+  <rs-cs-point-field [parentForm]="form" name="fromPoint" [cs]="cs" prefix="From">
+  </rs-cs-point-field>  
 
-  <app-point-field [parentForm]="form" name="toPoint" [cs]="cs" prefix="To">
-  </app-point-field>  
+  <rs-cs-point-field [parentForm]="form" name="toPoint" [cs]="cs" prefix="To">
+  </rs-cs-point-field>  
 </mat-card>
 
 <mat-card *ngIf="hasResult">

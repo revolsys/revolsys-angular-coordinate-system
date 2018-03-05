@@ -19,24 +19,12 @@ import {
 } from '@angular/material';
 
 import {AppComponent} from './app.component';
-import {DistanceAngleComponent} from './distance-angle/distance-angle.component';
-import {PointOffsetComponent} from './point-offset/point-offset.component';
-
-
 import {AppRoutingModule} from './app-routing.module';
-import {CsFieldComponent} from './cs-field/cs-field.component';
-import { PointFieldComponent } from './point-field/point-field.component';
-import { CoordinateSystemConversionComponent } from './coordinate-system-conversion/coordinate-system-conversion.component';
-
+import {RevolsysAngularCoordinateSystemModule} from '../lib/revolsys-angular-coordinate-system.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DistanceAngleComponent,
-    PointOffsetComponent,
-    CsFieldComponent,
-    PointFieldComponent,
-    CoordinateSystemConversionComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +40,8 @@ import { CoordinateSystemConversionComponent } from './coordinate-system-convers
     MatSelectModule,
     MatToolbarModule,
     MatTooltipModule,
-    AppRoutingModule
+    AppRoutingModule,
+    RevolsysAngularCoordinateSystemModule
   ],
   providers: [],
   bootstrap: [AppComponent]

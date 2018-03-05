@@ -11,7 +11,7 @@ import {CSI} from '../cs/CSI';
 import {Numbers} from '../cs/Numbers';
 
 @Component({
-  selector: 'app-distance-angle',
+  selector: 'rs-cs-distance-angle',
   templateUrl: './distance-angle.component.html',
   styleUrls: ['./distance-angle.component.css']
 })

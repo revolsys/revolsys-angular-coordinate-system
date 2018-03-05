@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-import {PointOffsetComponent} from './point-offset/point-offset.component';
-import {DistanceAngleComponent} from './distance-angle/distance-angle.component';
-import {CoordinateSystemConversionComponent} from './coordinate-system-conversion/coordinate-system-conversion.component';
+import {PointOffsetComponent} from '../lib/point-offset/point-offset.component';
+import {DistanceAngleComponent} from '../lib/distance-angle/distance-angle.component';
+import {CoordinateSystemConversionComponent} from '../lib/coordinate-system-conversion/coordinate-system-conversion.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'distance-angle', pathMatch: 'full'},

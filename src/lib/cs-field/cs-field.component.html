@@ -1,0 +1,7 @@
+<div class="flexFields">
+  <mat-form-field [floatLabel]="floatLabel">
+    <mat-select [placeholder]="placeholder">
+      <mat-option *ngFor="let cs of coordinateSystems" [value]="cs" >{{cs.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
