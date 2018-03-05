@@ -73,12 +73,12 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
   }
 
   ngOnInit() {
-    this.form.patchValue({
-      sourcePoint: {
-        x: '-121',
-        y: '50'
-      },
-    });
+    //    this.form.patchValue({
+    //      sourcePoint: {
+    //        x: '-121',
+    //        y: '50'
+    //      },
+    //    });
   }
 
 }

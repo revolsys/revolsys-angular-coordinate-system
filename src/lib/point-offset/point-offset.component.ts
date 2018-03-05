@@ -72,13 +72,13 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
   }
 
   ngOnInit() {
-    this.form.patchValue({
-      point: {
-        x: '-121',
-        y: '50'
-      },
-      azimuth: '32.1453936',
-      distance: '131935.9627804203'
-    });
+    //    this.form.patchValue({
+    //      point: {
+    //        x: '-121',
+    //        y: '50'
+    //      },
+    //      azimuth: '32.1453936',
+    //      distance: '131935.9627804203'
+    //    });
   }
 }

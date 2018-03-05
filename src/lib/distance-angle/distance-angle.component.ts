@@ -58,15 +58,15 @@ export class DistanceAngleComponent extends AbstractCoordinateSystemComponent im
   }
 
   ngOnInit() {
-    this.form.patchValue({
-      fromPoint: {
-        x: '-121',
-        y: '50'
-      },
-      toPoint: {
-        x: '-120',
-        y: '51'
-      }
-    });
+    //    this.form.patchValue({
+    //      fromPoint: {
+    //        x: '-121',
+    //        y: '50'
+    //      },
+    //      toPoint: {
+    //        x: '-120',
+    //        y: '51'
+    //      }
+    //    });
   }
 }
