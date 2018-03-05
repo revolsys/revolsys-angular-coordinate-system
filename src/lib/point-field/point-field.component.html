@@ -1,25 +1,31 @@
-<div class="flexFields" *ngIf="isGeographic; else projected" [formGroup]="form">
+<div class="flexFields" *ngIf="isGeographic; else projected">
   <mat-form-field [floatLabel]="floatLabel">
-    <input matInput formControlName="y" placeholder="{{prefix}}Latitude" [readonly]="!editable">
-    <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS or</span>
-    or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span></mat-hint>
+    <input matInput [(ngModel)]="y" placeholder="{{prefix}}Latitude" [readonly]="!editable">
+    <mat-hint>
+      <span *ngIf="!angleFormat || angleFormat === 'DMS'" matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
+      <span *ngIf="!angleFormat"> or </span>
+      <span *ngIf="!angleFormat || angleFormat === 'decimalDegrees'" matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span>
+    </mat-hint>
   </mat-form-field>
 
   <mat-form-field [floatLabel]="floatLabel">
-    <input matInput formControlName="x" placeholder="{{prefix}}Longitude" [readonly]="!editable">
-    <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
-    or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span></mat-hint>
+    <input matInput [(ngModel)]="x" placeholder="{{prefix}}Longitude" [readonly]="!editable">
+    <mat-hint>
+      <span *ngIf="!angleFormat || angleFormat === 'DMS'" matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
+      <span *ngIf="!angleFormat"> or </span>
+      <span *ngIf="!angleFormat || angleFormat === 'decimalDegrees'" matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span>
+    </mat-hint>
   </mat-form-field>
 </div>
 <ng-template #projected>
-  <div class="flexFields" [formGroup]="form">
+  <div class="flexFields">
     <mat-form-field [floatLabel]="floatLabel">
-      <input matInput formControlName="x" placeholder="{{prefix}}X (Easting)" [readonly]="!editable">
+     <input matInput [(ngModel)]="x" placeholder="{{prefix}}X (Easting)" [readonly]="!editable">
       <mat-hint>metres</mat-hint>
     </mat-form-field>
     
     <mat-form-field [floatLabel]="floatLabel">
-      <input matInput formControlName="y" placeholder="{{prefix}}Y (Northing)" [readonly]="!editable">
+     <input matInput [(ngModel)]="y" placeholder="{{prefix}}Y (Northing)" [readonly]="!editable">
       <mat-hint>metres</mat-hint>
     </mat-form-field>
   </div>

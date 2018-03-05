@@ -19,33 +19,32 @@
   <div class="flexRowToColumn">
     <rs-cs-coordinate-system-field formControlName="cs">
     </rs-cs-coordinate-system-field>
-  </div>
   
-  <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From">
-  </rs-cs-point-field>  
+	  <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From">
+	  </rs-cs-point-field>  
 
-  <div class="flexRowToColumn" style="margin-top:10px"> 
-    <mat-form-field>
+    <mat-form-field class="distance">
       <input matInput formControlName="distance" placeholder="Distance">
       <mat-hint>metres</mat-hint>
     </mat-form-field>
     
-    <mat-form-field>
+    <mat-form-field class="azimuth">
       <input matInput formControlName="azimuth" placeholder="Azimuth From -> To">
-      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS 9°9'9.9</span>
-      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal 9.9°</span></mat-hint>
+      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
+      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span></mat-hint>
     </mat-form-field>
   </div>
 </mat-card>
 
 <mat-card *ngIf="hasResult">
   <mat-card-title>Result</mat-card-title>
-  <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" editable="false" prefix="To">
-  </rs-cs-point-field>  
-
   <div class="flexRowToColumn" style="margin-top:10px"> 
-    <mat-form-field>
-      <input matInput [(ngModel)]="azimuth2" placeholder="Azimuth To -> From" >
-     </mat-form-field>
+	  <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" [angleFormat]="angleFormat" [editable]="false" prefix="To">
+	  </rs-cs-point-field>  
+
+    <mat-form-field class="azimuth-result">
+      <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" >
+      <mat-hint>{{angleFormat}}</mat-hint>
+    </mat-form-field>
   </div>
 </mat-card>

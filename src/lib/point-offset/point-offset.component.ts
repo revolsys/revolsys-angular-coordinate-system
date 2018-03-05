@@ -1,3 +1,4 @@
+import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
 import {Component, OnInit} from '@angular/core';
 import {
   FormBuilder,
@@ -14,9 +15,7 @@ import {CSI} from '../cs/CSI';
   templateUrl: './point-offset.component.html',
   styleUrls: ['./point-offset.component.css']
 })
-export class PointOffsetComponent implements OnInit {
-  cs = CSI.NAD83;
-
+export class PointOffsetComponent extends AbstractCoordinateSystemComponent implements OnInit {
   form: FormGroup;
 
   resultForm = this.fb.group({
@@ -33,6 +32,7 @@ export class PointOffsetComponent implements OnInit {
   azimuth2: number;
 
   constructor(private fb: FormBuilder) {
+    super('DMS');
     this.createForm();
   }
 
@@ -46,7 +46,6 @@ export class PointOffsetComponent implements OnInit {
       cs: this.cs
     });
     this.form.valueChanges.subscribe(data => {
-      console.log(data);
       this.cs = data.cs;
       const x = this.cs.toNumber(data.point.x);
       const y = this.cs.toNumber(data.point.y);

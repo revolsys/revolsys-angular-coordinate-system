@@ -1,3 +1,4 @@
+import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
 import {Component, OnInit} from '@angular/core';
 import {
   FormBuilder,
@@ -15,7 +16,7 @@ import {Numbers} from '../cs/Numbers';
   templateUrl: './distance-angle.component.html',
   styleUrls: ['./distance-angle.component.css']
 })
-export class DistanceAngleComponent implements OnInit {
+export class DistanceAngleComponent extends AbstractCoordinateSystemComponent implements OnInit {
   form: FormGroup;
 
   hasResult = false;
@@ -29,6 +30,7 @@ export class DistanceAngleComponent implements OnInit {
   cs = CSI.NAD83;
 
   constructor(private fb: FormBuilder) {
+    super('DMS');
     this.form = this.fb.group({
       fromPoint: {
         x: null,

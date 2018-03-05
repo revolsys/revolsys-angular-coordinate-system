@@ -1,3 +1,4 @@
+import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder} from '@angular/forms';
 import {CS} from '../cs/CS';
@@ -9,16 +10,13 @@ import {GeoCS} from '../cs/GeoCS';
   templateUrl: './point-field.component.html',
   styleUrls: ['./point-field.component.css']
 })
-export class PointFieldComponent implements OnInit {
+export class PointFieldComponent extends AbstractCoordinateSystemComponent implements OnInit {
 
   @Input('parentForm')
   parentForm: FormGroup;
 
   @Input('name')
   name: string;
-
-  @Input('cs')
-  cs = CSI.NAD83;
 
   form: FormGroup;
 
@@ -36,6 +34,7 @@ export class PointFieldComponent implements OnInit {
   prefix: string;
 
   constructor( @Inject(FormBuilder) private fb: FormBuilder) {
+    super();
   }
 
   ngOnInit(): void {
@@ -55,4 +54,37 @@ export class PointFieldComponent implements OnInit {
       this.parentForm.patchValue(newValue);
     }
   }
+
+  get x(): string {
+    const coordinate = this.form.value['x'];
+    if (this.editable) {
+      return coordinate;
+    } else {
+      return this.formatX(coordinate)
+    }
+  }
+
+  set x(x: string) {
+    if (this.editable) {
+      this.form.patchValue({'x': x});
+    }
+  }
+
+  get y(): string {
+    const coordinate = this.form.value['y'];
+    if (this.editable) {
+      return coordinate;
+    } else {
+      return this.formatY(coordinate)
+    }
+  }
+
+  set y(y: string) {
+    if (this.editable) {
+      this.form.patchValue({
+        'y': y
+      });
+    }
+  }
+
 }

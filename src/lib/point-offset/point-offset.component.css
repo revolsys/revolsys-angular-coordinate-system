@@ -1,0 +1,17 @@
+.azimuth {
+  max-width: 110px;
+}
+.azimuth-result {
+  max-width: 150px;
+}
+.distance {
+  max-width: 95px;
+}
+
+@media (max-width: 768px) {
+  .azimuth,
+  .azimuth-result,
+	.distance {
+	  max-width: inherit;
+  }
+}

@@ -16,27 +16,31 @@
   </mat-card-content>
 </mat-card>
 <mat-card [formGroup]="form">
-  <rs-cs-coordinate-system-field formControlName="cs">
-  </rs-cs-coordinate-system-field>
-
-  <rs-cs-point-field [parentForm]="form" name="fromPoint" [cs]="cs" prefix="From">
-  </rs-cs-point-field>  
-
-  <rs-cs-point-field [parentForm]="form" name="toPoint" [cs]="cs" prefix="To">
-  </rs-cs-point-field>  
+  <div class="flexRowToColumn"> 
+	  <rs-cs-coordinate-system-field formControlName="cs">
+	  </rs-cs-coordinate-system-field>
+	
+	  <rs-cs-point-field [parentForm]="form" name="fromPoint" [cs]="cs" prefix="From">
+	  </rs-cs-point-field>  
+	
+	  <rs-cs-point-field [parentForm]="form" name="toPoint" [cs]="cs" prefix="To">
+	  </rs-cs-point-field>
+	</div>  
 </mat-card>
 
 <mat-card *ngIf="hasResult">
   <mat-card-title>Result</mat-card-title>
   <div class="flexRowToColumn"> 
     <mat-form-field>
-      <input matInput [(ngModel)]="azimuth1" placeholder="Azimuth From -> To" >
-     </mat-form-field>
+      <input matInput [value]="formatAngle(azimuth1)" placeholder="Azimuth From -> To" >
+      <mat-hint>angleFormat</mat-hint>  
+    </mat-form-field>
     <mat-form-field>
-      <input matInput [(ngModel)]="azimuth2" placeholder="Azimuth To -> From" >
-     </mat-form-field>
+      <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" >
+      <mat-hint>angleFormat</mat-hint>  
+    </mat-form-field>
     <mat-form-field>
-      <input matInput [(ngModel)]="distance" placeholder="Distance" >
+      <input matInput [value]="distance.toFixed(3)" placeholder="Distance" >
     </mat-form-field>
   </div>
 </mat-card>

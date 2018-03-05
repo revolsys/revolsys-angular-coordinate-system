@@ -59,19 +59,41 @@ export class Angle {
   static toDecimalDegrees(text: string): number {
     if (text) {
       text = text.trim();
+
       if (text.length > 0) {
+        let negative = false;
+        if (text.endsWith('S') || text.endsWith('W')) {
+          negative = true;
+          text = text.substring(0, text.length).trim();
+        } else if (text.endsWith('E') || text.endsWith('N')) {
+          text = text.substring(0, text.length).trim();
+        }
         const parts = text.split(/[°'":\s]+/);
         let decimalDegrees = 0;
         if (parts.length > 0) {
           decimalDegrees = parseFloat(parts[0]);
+          if (decimalDegrees < 0) {
+            negative = true;
+            decimalDegrees = -decimalDegrees;
+          }
         }
         if (parts.length > 1) {
-          decimalDegrees += parseFloat(parts[1]) / 60;
+          const minutes = parseFloat(parts[1]) / 60;
+          if (!isNaN(minutes)) {
+            decimalDegrees += minutes;
+          }
         }
         if (parts.length > 2) {
-          decimalDegrees += parseFloat(parts[2]) / 3600;
+          const seconds = parseFloat(parts[2]) / 3600;
+          if (!isNaN(seconds)) {
+            decimalDegrees += seconds;
+          }
         }
-        return decimalDegrees;
+        if (negative) {
+          return -decimalDegrees;
+        } else {
+          return decimalDegrees;
+        }
       }
     }
     return null;

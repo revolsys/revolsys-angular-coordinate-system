@@ -10,11 +10,10 @@
   <div class="flexRowToColumn">
     <rs-cs-coordinate-system-field formControlName="sourceCs" placeholder="Source Coordinate System"></rs-cs-coordinate-system-field>
     <rs-cs-coordinate-system-field formControlName="targetCs" placeholder="Target Coordinate System"></rs-cs-coordinate-system-field>
-  </div>
 
-  <rs-cs-point-field [parentForm]="form" name="sourcePoint" [cs]="sourceCs" prefix="Source">
-  </rs-cs-point-field>  
-  
+	  <rs-cs-point-field [parentForm]="form" name="sourcePoint" [cs]="sourceCs" prefix="Source">
+	  </rs-cs-point-field>  
+  </div>
 </mat-card>
 
 <mat-card *ngIf="hasResult">
