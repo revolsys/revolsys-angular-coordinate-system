@@ -27,8 +27,6 @@ export class DistanceAngleComponent extends AbstractCoordinateSystemComponent im
 
   distance: number;
 
-  cs = CSI.NAD83;
-
   constructor(private fb: FormBuilder) {
     super('DMS');
     this.form = this.fb.group({

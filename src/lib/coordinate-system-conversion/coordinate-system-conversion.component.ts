@@ -1,3 +1,4 @@
+import {AbstractCoordinateSystemComponent} from "../abstract-coordinate-system.component";
 import {Component, OnInit} from '@angular/core';
 import {
   FormBuilder,
@@ -16,9 +17,7 @@ import {Numbers} from '../cs/Numbers';
   templateUrl: './coordinate-system-conversion.component.html',
   styleUrls: ['./coordinate-system-conversion.component.css']
 })
-export class CoordinateSystemConversionComponent implements OnInit {
-  sourceCs = CSI.NAD83;
-
+export class CoordinateSystemConversionComponent extends AbstractCoordinateSystemComponent implements OnInit {
   targetCs = CSI.BC_ALBERS;
 
   form: FormGroup;
@@ -33,6 +32,7 @@ export class CoordinateSystemConversionComponent implements OnInit {
   hasResult = false;
 
   constructor(private fb: FormBuilder) {
+    super('DMS');
     this.form = this.fb.group({
       sourcePoint: {
         x: null,
@@ -42,16 +42,16 @@ export class CoordinateSystemConversionComponent implements OnInit {
         x: null,
         y: null
       },
-      sourceCs: this.sourceCs,
+      sourceCs: this.cs,
       targetCs: this.targetCs
     });
     this.form.valueChanges.subscribe(data => {
-      this.sourceCs = data.sourceCs;
+      this.cs = data.sourceCs;
       this.targetCs = data.targetCs;
-      const x1 = this.sourceCs.toNumber(data.sourcePoint.x);
-      const y1 = this.sourceCs.toNumber(data.sourcePoint.y);
+      const x1 = this.cs.toNumber(data.sourcePoint.x);
+      const y1 = this.cs.toNumber(data.sourcePoint.y);
       if (x1 != null && y1 != null) {
-        const targetPoint = this.sourceCs.convertPoint(this.targetCs, x1, y1);
+        const targetPoint = this.cs.convertPoint(this.targetCs, x1, y1);
         if (targetPoint) {
           this.hasResult = true;
           const x2 = this.targetCs.makePrecise(targetPoint[0]);
