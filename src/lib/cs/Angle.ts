@@ -44,7 +44,7 @@ export class Angle {
   }
 
   static toDegrees(radians: number): number {
-    const degrees = radians * 180 / Math.PI;
+    const degrees = (radians * 180) / Math.PI;
     if (degrees < 0) {
       return 360 + degrees;
     } else {

@@ -34,7 +34,8 @@ const components = [
   DistanceAngleComponent,
   MeridianConvergenceComponent,
   PointFieldComponent,
-  PointOffsetComponent
+  PointOffsetComponent,
+  ScaleFactorTtCorrectionComponent
 ];
 @NgModule({
   imports: [

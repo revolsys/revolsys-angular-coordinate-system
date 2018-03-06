@@ -48,7 +48,7 @@ export class ScaleFactorTtCorrectionComponent extends AbstractCoordinateSystemCo
       const toX = projCs.toNumber(data.toPoint.x);
       const toY = projCs.toNumber(data.toPoint.y);
 
-      if (fromX != null && fromY != null && toX != null && toY != null) {
+      if (fromX && fromY && toX && toY) {
         this.hasResult = true;
         this.calculate(fromX, fromY, toX, toY);
       } else {
@@ -59,9 +59,13 @@ export class ScaleFactorTtCorrectionComponent extends AbstractCoordinateSystemCo
 
   ngOnInit() {
     this.form.patchValue({
-      point: {
-        x: '-109',
-        y: '45'
+      fromPoint: {
+        x: '-1000000',
+        y: '5200000'
+      },
+      toPoint: {
+        x: '1000000',
+        y: '6900000'
       },
     });
   }
@@ -70,12 +74,10 @@ export class ScaleFactorTtCorrectionComponent extends AbstractCoordinateSystemCo
     const projCs = this.projCoordinateSystem;
     const geoCs = projCs.geoCS;
     const xo = projCs.falseEasting;
-    const sf1 = projCs.centralMeridan;
+    const sf1 = projCs.scaleFactor;
 
-    const major_semiaxis = geoCs.ellipsoid.semiMajorAxis;
-    const minor_semiaxis = geoCs.ellipsoid.semiMinorAxis;
-    const a = major_semiaxis;
-    const b = minor_semiaxis;
+    const a = geoCs.ellipsoid.semiMajorAxis;
+    const b = geoCs.ellipsoid.semiMinorAxis;
     const mdeg = -projCs.centralMeridan;
     const crad = Angle.toRadians(mdeg);
 
@@ -87,9 +89,13 @@ export class ScaleFactorTtCorrectionComponent extends AbstractCoordinateSystemCo
     const phi2 = this.tmxypl(x2, y2, a, b, sf1, xo, crad);
     const phi = (phi1 + phi2) / 2;
     const ttls = this.ttls(a, b, phi, dist, x1, y1, x2, y2, xo, sf1);
-    const tt = ttls[0];
+    let tt = ttls[0];
+    if (tt < 0) {
+      tt = -tt;
+    }
     this.lineScaleFactor = ttls[1];
     this.ttCorrection = Angle.toDegrees(tt) * 3600 % 60;
+    console.log(this.ttCorrection);
   }
 
 

@@ -32,12 +32,12 @@
   <div class="flexRowToColumn"> 
 
     <mat-form-field >
-      <input matInput [value]="lineScaleFactor.toFixed(2)" placeholder="Line Scale Factor" [readonly]="true">
+      <input matInput [value]="lineScaleFactor.toFixed(6)" placeholder="Line Scale Factor" [readonly]="true">
     </mat-form-field>
 
     <mat-form-field >
       <input matInput [value]="ttCorrection.toFixed(2)" placeholder="(T-t) Correction" [readonly]="true">
-      <mat-hint>{{angleFormat}}</mat-hint>
+      <mat-hint>seconds</mat-hint>
     </mat-form-field>
   </div>
 </mat-card>
