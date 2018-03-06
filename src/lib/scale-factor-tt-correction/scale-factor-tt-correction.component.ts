@@ -58,16 +58,16 @@ export class ScaleFactorTtCorrectionComponent extends AbstractCoordinateSystemCo
   }
 
   ngOnInit() {
-    this.form.patchValue({
-      fromPoint: {
-        x: '-1000000',
-        y: '5200000'
-      },
-      toPoint: {
-        x: '1000000',
-        y: '6900000'
-      },
-    });
+    //    this.form.patchValue({
+    //      fromPoint: {
+    //        x: '-1000000',
+    //        y: '5200000'
+    //      },
+    //      toPoint: {
+    //        x: '1000000',
+    //        y: '6900000'
+    //      },
+    //    });
   }
 
   private calculate(x1: number, y1: number, x2: number, y2: number) {
@@ -95,7 +95,6 @@ export class ScaleFactorTtCorrectionComponent extends AbstractCoordinateSystemCo
     }
     this.lineScaleFactor = ttls[1];
     this.ttCorrection = Angle.toDegrees(tt) * 3600 % 60;
-    console.log(this.ttCorrection);
   }
 
 
