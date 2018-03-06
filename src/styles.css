@@ -4,7 +4,7 @@
 .mat-icon-button,
 .mat-form-field {
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
 }
 
 .mat-toolbar .mat-form-field {
@@ -28,7 +28,7 @@
 
 .flexDiv {
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
   flex-direction: column;
 }
 .mat-icon-button {

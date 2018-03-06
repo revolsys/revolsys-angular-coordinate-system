@@ -9,7 +9,7 @@
 @media (max-width: 768px) {
   :host {
     align-items: stretch;
-    flex: 1;
+    flex: 1 1 auto;
   }
 	.mat-form-field {
 	  max-width: inherit;
