@@ -41,9 +41,6 @@ export class MeridianConvergenceComponent extends AbstractCoordinateSystemCompon
   private createForm() {
     this.form = this.fb.group({
       point: this.fb.group({x: null, y: null}),
-      toPoint: this.fb.group({x: null, y: null}),
-      azimuth: null,
-      distance: null,
       projCoordinateSystem: this.projCoordinateSystem,
       geoCoordinateSystem: this.geoCoordinateSystem
     });
@@ -63,12 +60,12 @@ export class MeridianConvergenceComponent extends AbstractCoordinateSystemCompon
   }
 
   ngOnInit() {
-    this.form.patchValue({
-      point: {
-        x: '-109',
-        y: '45'
-      },
-    });
+    //    this.form.patchValue({
+    //      point: {
+    //        x: '-109',
+    //        y: '45'
+    //      },
+    //    });
   }
 
   private calculate(lon: number, lat: number) {
