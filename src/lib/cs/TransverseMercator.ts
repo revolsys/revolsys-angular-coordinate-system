@@ -21,9 +21,14 @@ export class TransverseMercator extends ProjCS {
 
   private m0: number;
 
-  private x0: number;
+  public get x0(): number {
+    return this.falseEasting;
+  }
 
-  private y0: number;
+
+  public get y0(): number {
+    return this.falseNorthing;
+  }
 
   private e1Time2Div2MinusE1Pow3Times27Div32: number;
 
@@ -43,18 +48,15 @@ export class TransverseMercator extends ProjCS {
     id: number,
     name: string,
     geoCs: GeoCS,
-    private latitude_of_origin: number,
-    private central_meridan: number,
-    private scale_factor: number,
-    private false_easting: number,
-    private false_northing: number,
+    public readonly latitudeOfOrigin: number,
+    public readonly centralMeridan: number,
+    public readonly scaleFactor: number,
+    public readonly falseEasting: number,
+    public readonly falseNorthing: number,
   ) {
     super(id, name, geoCs);
-    const latitudeOfNaturalOrigin = latitude_of_origin;
-    const centralMeridian = central_meridan;
-    const scaleFactor = scale_factor;
-    this.x0 = false_easting;
-    this.y0 = false_northing;
+    const latitudeOfNaturalOrigin = latitudeOfOrigin;
+    const centralMeridian = centralMeridan;
 
     const ellipsoid = this.geoCS.ellipsoid;
     this.lambda0 = Angle.toRadians(centralMeridian);

@@ -1,3 +1,4 @@
+import {CS} from "./cs/CS";
 import {Input} from '@angular/core';
 import {GeoCS} from './cs/GeoCS';
 import {Numbers} from './cs/Numbers';
@@ -5,7 +6,7 @@ import {CSI} from './cs/CSI';
 
 export class AbstractCoordinateSystemComponent {
   @Input('cs')
-  cs = CSI.NAD83;
+  cs: CS = CSI.NAD83;
 
   @Input()
   public angleFormat: string
@@ -15,10 +16,15 @@ export class AbstractCoordinateSystemComponent {
     this.angleFormat = angleFormat;
   }
 
-  formatAngle(value: number): string {
+  formatAngle(value: number, decimalPlaces?: number): string {
     if (value) {
       if ('DMS' === this.angleFormat) {
-        return Numbers.degreesToDms(value, 5);
+        if (decimalPlaces === null) {
+          decimalPlaces = 5;
+        }
+        return Numbers.degreesToDms(value, decimalPlaces);
+      } else if (decimalPlaces) {
+        return value.toFixed(2);
       } else {
         return value.toString();
       }
@@ -30,14 +36,10 @@ export class AbstractCoordinateSystemComponent {
   formatX(value: number): string {
     if (value) {
       if (this.cs instanceof GeoCS) {
-        if (value) {
-          if ('DMS' === this.angleFormat) {
-            return Numbers.degreesToDmsLon(value, 5);
-          } else {
-            return value.toString();
-          }
+        if ('DMS' === this.angleFormat) {
+          return Numbers.degreesToDmsLon(value, 5);
         } else {
-          return '-';
+          return value.toString();
         }
       } else {
         return value.toFixed(3);
@@ -50,14 +52,10 @@ export class AbstractCoordinateSystemComponent {
   formatY(value: number): string {
     if (value) {
       if (this.cs instanceof GeoCS) {
-        if (value) {
-          if ('DMS' === this.angleFormat) {
-            return Numbers.degreesToDmsLat(value, 5);
-          } else {
-            return value.toString();
-          }
+        if ('DMS' === this.angleFormat) {
+          return Numbers.degreesToDmsLat(value, 5);
         } else {
-          return '-';
+          return value.toString();
         }
       } else {
         return value.toFixed(3);

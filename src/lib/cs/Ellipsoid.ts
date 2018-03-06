@@ -16,8 +16,8 @@ export class Ellipsoid {
   readonly e: number;
 
   constructor(
-    public readonly a: number, // semiMajorAxis
-    inverseFlattening: number
+    public readonly semiMajorAxis: number, // semiMajorAxis
+    public readonly inverseFlattening: number
   ) {
     this.f = 1 / inverseFlattening;
     this.b = this.a - this.a * this.f;
@@ -33,8 +33,12 @@ export class Ellipsoid {
     return this.e;
   }
 
-  get semiMajorAxis(): number {
-    return this.a;
+  get a(): number {
+    return this.semiMajorAxis;
+  }
+
+  get semiMinorAxis(): number {
+    return this.b;
   }
 
   angle(x1: number, y1: number, x2: number, y2: number, precision: number = 10000000): number {

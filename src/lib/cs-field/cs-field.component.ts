@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild, forwardRef} from '@angular/core';
+import {Component, Input, ViewChild, forwardRef} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR, } from '@angular/forms';
 import {MatSelect} from '@angular/material';
 
@@ -17,7 +17,8 @@ import {CSI} from '../cs/CSI';
     }
   ]
 })
-export class CsFieldComponent implements OnInit, ControlValueAccessor {
+export class CsFieldComponent implements ControlValueAccessor {
+  @Input()
   coordinateSystems: CS[] = [CSI.NAD83, CSI.utmN(7), CSI.utmN(8), CSI.utmN(9), CSI.utmN(10), CSI.utmN(11), CSI.BC_ALBERS];
 
   @ViewChild(MatSelect)
@@ -38,10 +39,6 @@ export class CsFieldComponent implements OnInit, ControlValueAccessor {
   }
   set value(newValue: any) {
     this.select.value = newValue;
-  }
-
-  ngOnInit() {
-
   }
 
   writeValue(obj: any): void {
