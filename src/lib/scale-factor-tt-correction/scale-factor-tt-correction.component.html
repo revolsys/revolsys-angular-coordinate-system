@@ -1,0 +1,43 @@
+<mat-card>
+   <mat-card-title-group>
+     <mat-card-title>Meridian Convergence &amp; Point Scale Factor Computation</mat-card-title>
+  </mat-card-title-group>
+  <mat-card-content>
+    <p>This utility calculates meridian convergence and point scale factor for a latitude/longitude point. 
+    The computations are a function of the defined NAD83 UTM coordinate system. The output is the
+    meridian convergence (degrees-minutes-seconds) and the point scale factor. Meridian convergence
+    is the angle between the tangent to a projected meridian of longitude on the mapping plane and
+    grid north. The point scale factor describes,
+    at the given point on the map projection, the amount of distortion in length with respect to
+    the origin and is output as a ratio.</p>
+  </mat-card-content>
+</mat-card>
+ 
+<mat-card [formGroup]="form">
+  <div class="flexRowToColumn">
+  
+    <rs-cs-point-field [parentForm]="form" name="fromPoint" [cs]="projCoordinateSystem" prefix="From ">
+    </rs-cs-point-field>  
+  
+    <rs-cs-point-field [parentForm]="form" name="toPoint" [cs]="projCoordinateSystem" prefix="To ">
+    </rs-cs-point-field>  
+
+    <rs-cs-coordinate-system-field formControlName="projCoordinateSystem" [coordinateSystems]="projCoordinateSystems" placeholder="Result Coordinate System">
+    </rs-cs-coordinate-system-field>
+  </div>
+</mat-card>
+
+<mat-card *ngIf="hasResult">
+  <mat-card-title>Result</mat-card-title>
+  <div class="flexRowToColumn"> 
+
+    <mat-form-field >
+      <input matInput [value]="lineScaleFactor.toFixed(2)" placeholder="Line Scale Factor" [readonly]="true">
+    </mat-form-field>
+
+    <mat-form-field >
+      <input matInput [value]="ttCorrection.toFixed(2)" placeholder="(T-t) Correction" [readonly]="true">
+      <mat-hint>{{angleFormat}}</mat-hint>
+    </mat-form-field>
+  </div>
+</mat-card>
