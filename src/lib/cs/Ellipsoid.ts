@@ -41,7 +41,85 @@ export class Ellipsoid {
     return this.b;
   }
 
-  angle(x1: number, y1: number, x2: number, y2: number, precision: number = 10000000): number {
+  public astronomicAzimuth(lon1: number, lat1: number, h1: number, xsi: number,
+    eta: number, lon2: number, lat2: number, h2: number): number {
+    const a = this.semiMajorAxis;
+    const b = this.semiMinorAxis;
+
+    const phi1 = Angle.toRadians(lat1);
+    const phi2 = Angle.toRadians(lat2);
+    eta = Angle.toRadians(eta);
+    xsi = Angle.toRadians(xsi);
+
+    const phim = (phi1 + phi2) / 2;
+    const esq = (a * a - b * b) / (a * a);
+
+    const sinPh1 = Math.sin(phi1);
+    const d__1 = Math.sqrt(1. - esq * (sinPh1 * sinPh1));
+    const sinPhi2 = Math.sin(phi2);
+    const d__4 = Math.sqrt(1. - esq * (sinPhi2 * sinPhi2));
+    const mm = (a * (1. - esq) / (d__1 * (d__1 * d__1))
+      + a * (1. - esq) / (d__4 * (d__4 * d__4))) / 2.;
+    const nm = (a / Math.sqrt(1 - esq * (sinPh1 * sinPh1))
+      + a / Math.sqrt(1 - esq * (sinPhi2 * sinPhi2))) / 2;
+
+    const distance = this.distanceMetres(lon1, lat1, lon2, lat2);
+    const azimuth = this.azimuthRadians(lon1, lat1, lon2, lat2);
+
+    // c1 is always 0 as dh is 0
+
+    const cosPhi2 = Math.cos(phi2);
+    const c2 = h2 / mm * esq * Math.sin(azimuth) * Math.cos(azimuth) * (cosPhi2 * cosPhi2);
+
+    const cosPhim = Math.cos(phim);
+    const c3 = -esq * (distance * distance) * (cosPhim * cosPhim) * Math.sin(azimuth * 2)
+      / (nm * nm * 12);
+
+    let spaz = azimuth + eta * Math.tan(phi1) - c2 - c3;
+
+    if (spaz < 0) {
+      spaz = Angle.PI_TIMES_2 + spaz;
+    }
+    return Angle.toDegrees(spaz);
+  }
+  public slopeDistance(lon1: number, lat1: number, h1: number, xsi: number, eta: number, lon2: number, lat2: number, h2: number, x0: number, y0: number, z0: number): number {
+    const lambda1 = Angle.toRadians(lon1);
+    const phi1 = Angle.toRadians(lat1);
+    const lambda2 = Angle.toRadians(lon2);
+    const phi2 = Angle.toRadians(lat2);
+    eta = Angle.toRadians(eta);
+    xsi = Angle.toRadians(xsi);
+
+    const p1 = this.toCaresian(phi1, lambda1, h1, x0, y0, z0);
+    const p2 = this.toCaresian(phi2, lambda2, h2, x0, y0, z0);
+
+    const deltaX = p1[0] - p2[0];
+    const deltaY = p1[1] - p2[1];
+    const deltaZ = p1[2] - p2[2];
+    const ssq = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
+    const slopeDistance = Math.sqrt(ssq);
+
+    return slopeDistance;
+  }
+
+  private toCaresian(phi: number, rlam: number, h: number, x0: number, y0: number, z0: number): number[] {
+    const a = this.semiMajorAxis;
+    const b = this.semiMinorAxis;
+
+    const e2 = (a * a - b * b) / (a * a);
+    const sp = Math.sin(phi);
+    const cp = Math.cos(phi);
+
+    const n = a / Math.sqrt(1 - e2 * (sp * sp));
+    const x = x0 + (n + h) * cp * Math.cos(rlam);
+    const y = y0 + (n + h) * cp * Math.sin(rlam);
+    const z = z0 + (n * (1. - e2) + h) * sp;
+    return [
+      x, y, z
+    ];
+  }
+
+  azimuthRadians(x1: number, y1: number, x2: number, y2: number): number {
     const a = this.a;
     const f = this.f;
     const b = this.b;
@@ -97,87 +175,15 @@ export class Ellipsoid {
       throw new Error('Formula failed to converge');
     }
 
-    const forwardAzimuth = Math.atan2(cosU2 * sinlon, cosU1 * sinU2 - sinU1 * cosU2 * coslon);
-    return Numbers.makePrecise(precision, Angle.toDegrees(forwardAzimuth));
+    return Math.atan2(cosU2 * sinlon, cosU1 * sinU2 - sinU1 * cosU2 * coslon);
   }
 
-  // https://en.wikipedia.org/wiki/Vincenty%27s_formulae
-  distanceAndAngle(x1: number, y1: number, x2: number, y2: number, precision: number = 10000000): number[] {
-    const a = this.a;
-    const f = this.f;
-    const b = this.b;
-
-    const lat1 = Angle.toRadians(y1); // Φ1
-    const lat2 = Angle.toRadians(y2); // Φ2
-
-    const U1 = Math.atan((1 - f) * Math.tan(lat1));
-    const U2 = Math.atan((1 - f) * Math.tan(lat2));
-
-    const lon1 = Angle.toRadians(x1);
-    const lon2 = Angle.toRadians(x2);
-    const L = lon2 - lon1;
-
-    const cosU1 = Math.cos(U1);
-    const sinU1 = Math.sin(U1);
-    const cosU2 = Math.cos(U2);
-    const sinU2 = Math.sin(U2);
-
-    let lon = L;
-    let lastLon;
-    let iterationLimit = 100;
-    let cosSqAlpha;
-    let sinSigma;
-    let cos2SigmaM;
-    let Sigma;
-    let cosSigma;
-    let sinlon;
-    let coslon;
-
-    do {
-      sinlon = Math.sin(lon);
-      coslon = Math.cos(lon);
-      const sinSqSigma = (cosU2 * sinlon) * (cosU2 * sinlon) +
-        (cosU1 * sinU2 - sinU1 * cosU2 * coslon) * (cosU1 * sinU2 - sinU1 * cosU2 * coslon);
-      sinSigma = Math.sqrt(sinSqSigma);
-      if (sinSigma === 0) { // co-incident points
-        return [0, 0, 0];
-      }
-      cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * coslon;
-      Sigma = Math.atan2(sinSigma, cosSigma);
-      const sinAlpha = cosU1 * cosU2 * sinlon / sinSigma;
-      cosSqAlpha = 1 - sinAlpha * sinAlpha;
-      cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
-      if (isNaN(cos2SigmaM)) {// equatorial line: cosSqAlpha=0 (§6)
-        cos2SigmaM = 0;
-      }
-      const C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
-      lastLon = lon;
-      lon = L + (1 - C) * f * sinAlpha * (Sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
-    } while (Math.abs(lon - lastLon) > 1e-12 && --iterationLimit > 0);
-    if (iterationLimit === 0) {
-      throw new Error('Formula failed to converge');
-    }
-
-    const uSq = cosSqAlpha * (a * a - b * b) / (b * b);
-    const A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
-    const B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
-    const deltaSigmaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
-      B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
-
-    const distance = b * A * (Sigma - deltaSigmaSigma);
-
-    const forwardAzimuth = Math.atan2(cosU2 * sinlon, cosU1 * sinU2 - sinU1 * cosU2 * coslon);
-    const reverseAzimuth = Math.atan2(cosU1 * sinlon, -sinU1 * cosU2 + cosU1 * sinU2 * coslon);
-    const angle1 = Numbers.makePrecise(precision, Angle.toDegrees(forwardAzimuth));
-    const angle2 = Numbers.makePrecise(precision, Angle.toDegrees(reverseAzimuth));
-    return [
-      distance,
-      Numbers.makePrecise(precision, angle1),
-      Numbers.makePrecise(precision, angle2)
-    ];
+  azimuth(x1: number, y1: number, x2: number, y2: number, precision: number = 10000000): number {
+    const azimuth = this.azimuthRadians(x1, y1, x2, y2);
+    return Numbers.makePrecise(precision, Angle.toDegrees(azimuth));
   }
 
-  distance(x1: number, y1: number, x2: number, y2: number, precision: number = 10000000): number {
+  distanceMetres(x1: number, y1: number, x2: number, y2: number, precision: number = 10000000): number {
     const f = this.f;
     const a = this.a;
     const b = this.b;
@@ -237,6 +243,35 @@ export class Ellipsoid {
     const distance = b * A * (sigma - deltaSigmaSigma);
 
     return distance;
+  }
+
+
+  public radius(lat, alpha): number {
+    const phi = Angle.toRadians(lat);
+    const ecc = this.eccentricitySquared;
+    const sinPhi = Math.sin(phi);
+    const denom = Math.sqrt(1. - ecc * (sinPhi * sinPhi));
+    const pvrad = this.semiMajorAxis / denom;
+    const merrad = this.semiMajorAxis * (1. - ecc) / (denom * (denom * denom));
+    const cosAlpha = Math.cos(alpha);
+    const sinAlpha = Math.sin(alpha);
+    return pvrad * merrad / (pvrad * (cosAlpha * cosAlpha) + merrad * (sinAlpha * sinAlpha));
+  }
+
+  public distanceMetresZ(lon1: number, lat1: number, h1: number,
+    lon2: number, lat2: number, h2: number): number {
+    const distance = this.distanceMetres(lon1, lat1, lon2, lat2);
+    const angleForwards = this.azimuth(lon1, lat1, lon2, lat2);
+    const angleBackwards = this.azimuth(lon1, lat1, lon2, lat2);
+
+    const r1 = this.radius(lat1, angleForwards);
+    const r2 = this.radius(lat2, angleBackwards);
+    const deltaH = h2 - h1;
+    const delhsq = deltaH * deltaH;
+    const twor = r1 + r2;
+    const lo = twor * Math.sin(distance / twor);
+    const losq = lo * lo;
+    return Math.sqrt(losq * (h1 / r1 + 1.) * (h2 / r2 + 1.) + delhsq);
   }
 
   pointOffset(lon: number, lat: number, distance: number, angle: number, precision: number = 10000000): number[] {

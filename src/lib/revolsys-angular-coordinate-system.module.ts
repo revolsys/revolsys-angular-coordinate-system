@@ -11,6 +11,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatDividerModule,
+  MatExpansionModule,
   MatFormFieldModule,
   MatInputModule,
   MatMenuModule,
@@ -22,20 +23,18 @@ import {
 
 import {CoordinateSystemConversionComponent} from './coordinate-system-conversion/coordinate-system-conversion.component';
 import {CsFieldComponent} from './cs-field/cs-field.component';
-import {DistanceAngleComponent} from './distance-angle/distance-angle.component';
+import {LineMetricsComponent} from './line-metrics/line-metrics.component';
 import {MeridianConvergenceComponent} from "./meridian-convergence/meridian-convergence.component";
 import {PointFieldComponent} from './point-field/point-field.component';
 import {PointOffsetComponent} from './point-offset/point-offset.component';
-import {ScaleFactorTtCorrectionComponent} from './scale-factor-tt-correction/scale-factor-tt-correction.component';
 
 const components = [
   CoordinateSystemConversionComponent,
   CsFieldComponent,
-  DistanceAngleComponent,
+  LineMetricsComponent,
   MeridianConvergenceComponent,
   PointFieldComponent,
-  PointOffsetComponent,
-  ScaleFactorTtCorrectionComponent
+  PointOffsetComponent
 ];
 @NgModule({
   imports: [
@@ -47,6 +46,7 @@ const components = [
     MatButtonModule,
     MatCardModule,
     MatDividerModule,
+    MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
     MatMenuModule,

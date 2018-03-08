@@ -18,7 +18,7 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
   @Input('name')
   name: string;
 
-  form: FormGroup;
+  pointForm: FormGroup;
 
   @Input()
   editable = true;
@@ -42,21 +42,21 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
       this.prefix = this.prefix.trim() + ' ';
     }
     const value = this.parentForm.value[this.name];
-    this.form = <FormGroup>this.parentForm.controls[this.name];
-    if (!this.form) {
-      this.form = this.fb.group({
+    this.pointForm = <FormGroup>this.parentForm.controls[this.name];
+    if (!this.pointForm) {
+      this.pointForm = this.fb.group({
         'x': null,
         'y': null
       });
-      this.parentForm.addControl(this.name, this.form);
+      this.parentForm.addControl(this.name, this.pointForm);
       const newValue = {};
-      newValue[this.name] = this.form.value;
+      newValue[this.name] = this.pointForm.value;
       this.parentForm.patchValue(newValue);
     }
   }
 
   get x(): string {
-    const coordinate = this.form.value['x'];
+    const coordinate = this.pointForm.value['x'];
     if (this.editable) {
       return coordinate;
     } else {
@@ -66,12 +66,12 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
 
   set x(x: string) {
     if (this.editable) {
-      this.form.patchValue({'x': x});
+      this.pointForm.patchValue({'x': x});
     }
   }
 
   get y(): string {
-    const coordinate = this.form.value['y'];
+    const coordinate = this.pointForm.value['y'];
     if (this.editable) {
       return coordinate;
     } else {
@@ -81,9 +81,7 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
 
   set y(y: string) {
     if (this.editable) {
-      this.form.patchValue({
-        'y': y
-      });
+      this.pointForm.patchValue({'y': y});
     }
   }
 

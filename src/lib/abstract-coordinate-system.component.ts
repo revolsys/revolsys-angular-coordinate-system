@@ -16,14 +16,14 @@ export class AbstractCoordinateSystemComponent {
     this.angleFormat = angleFormat;
   }
 
-  formatAngle(value: number, decimalPlaces?: number): string {
+  formatAngle(value: number, decimalPlaces: number = -1): string {
     if (value) {
       if ('DMS' === this.angleFormat) {
-        if (decimalPlaces === null) {
+        if (decimalPlaces < 0) {
           decimalPlaces = 5;
         }
         return Numbers.degreesToDms(value, decimalPlaces);
-      } else if (decimalPlaces) {
+      } else if (decimalPlaces < 0) {
         return value.toFixed(2);
       } else {
         return value.toString();

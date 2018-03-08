@@ -24,9 +24,12 @@ export class GeoCS extends CS {
     return this._rf;
   }
 
-
   angle(x1: number, y1: number, x2: number, y2: number): number {
-    return this.ellipsoid.angle(x1, y1, x2, y2);
+    return this.ellipsoid.azimuth(x1, y1, x2, y2);
+  }
+
+  angleEllipsoid(x1: number, y1: number, x2: number, y2: number): number {
+    return this.ellipsoid.azimuth(x1, y1, x2, y2);
   }
 
   convertPoint(cs: CS, x: number, y: number): number[] {
@@ -38,8 +41,12 @@ export class GeoCS extends CS {
     }
   }
 
-  distance(x1: number, y1: number, x2: number, y2: number) {
-    return this.ellipsoid.distance(x1, y1, x2, y2);
+  distanceMetres(x1: number, y1: number, x2: number, y2: number) {
+    return this.ellipsoid.distanceMetres(x1, y1, x2, y2);
+  }
+
+  distanceMetresEllipsoid(x1: number, y1: number, x2: number, y2: number) {
+    return this.distanceMetres(x1, y1, x2, y2);
   }
 
   makePrecise(value: number): number {

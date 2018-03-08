@@ -17,6 +17,12 @@ export class ProjCS extends CS {
     return Angle.angleCompassDegrees(x1, y1, x2, y2);
   }
 
+  angleEllipsoid(x1: number, y1: number, x2: number, y2: number): number {
+    const lonLat1 = this.inverse(x1, y1);
+    const lonLat2 = this.inverse(x2, y2);
+    return this.geoCS.angleEllipsoid(lonLat1[0], lonLat1[1], lonLat2[0], lonLat2[1]);
+  }
+
   public convertPoint(cs: CS, x: number, y: number): number[] {
     if (this === cs) {
       return [x, y];
@@ -32,10 +38,16 @@ export class ProjCS extends CS {
     }
   }
 
-  distance(x1: number, y1: number, x2: number, y2: number): number {
+  distanceMetres(x1: number, y1: number, x2: number, y2: number): number {
     const dx = x2 - x1;
     const dy = y2 - y1;
     return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  distanceMetresEllipsoid(x1: number, y1: number, x2: number, y2: number): number {
+    const lonLat1 = this.inverse(x1, y1);
+    const lonLat2 = this.inverse(x2, y2);
+    return this.geoCS.distanceMetresEllipsoid(lonLat1[0], lonLat1[1], lonLat2[0], lonLat2[1]);
   }
 
   pointOffset(x: number, y: number, distance: number, angle: number): number[] {
@@ -63,6 +75,4 @@ export class ProjCS extends CS {
   public project(lon: number, lat: number): number[] {
     throw new Error('Project operation not supported');
   }
-
-
 }

@@ -5,6 +5,8 @@ import {GeoCS} from './GeoCS';
 export class TransverseMercator extends ProjCS {
   private a: number;
 
+  private b: number;
+
   private ePow4: number;
 
   private ePow6: number;
@@ -61,6 +63,7 @@ export class TransverseMercator extends ProjCS {
     const ellipsoid = this.geoCS.ellipsoid;
     this.lambda0 = Angle.toRadians(centralMeridian);
     this.a = ellipsoid.semiMajorAxis;
+    this.b = ellipsoid.semiMinorAxis;
     this.k0 = scaleFactor;
     const phi0 = Angle.toRadians(latitudeOfNaturalOrigin);
     this.eSq = ellipsoid.eccentricitySquared;
@@ -85,7 +88,7 @@ export class TransverseMercator extends ProjCS {
       * (1 - this.eSq / 4 - this.ePow4 * 3 / 64 - this.ePow6 * 5 / 256);
   }
 
-  public inverse(x: number, y: number): number[] {
+  public inverseRadians(x: number, y: number): number[] {
     const eSq = this.eSq;
     const a = this.a;
     const k0 = this.k0;
@@ -120,11 +123,17 @@ export class TransverseMercator extends ProjCS {
 
     const lambda = this.lambda0 + (d - (1 + 2 * t1 + c1) * d3 / 6
       + (5 - 2 * c1 + 28 * t1 - 3 * c1Sq + this.ePrimeSqTimes8 + 24 * t1Sq) * d5 / 120) / cosPhi1;
-
     return [
-      Angle.toDegrees(lambda),
-      Angle.toDegrees(phi)
+      lambda,
+      phi
     ];
+  }
+
+  public inverse(x: number, y: number): number[] {
+    const point = this.inverseRadians(x, y);
+    point[0] = Angle.toDegrees(point[0]);
+    point[1] = Angle.toDegrees(point[1]);
+    return point;
   }
 
   private m(phi: number): number {
@@ -163,4 +172,50 @@ export class TransverseMercator extends ProjCS {
     return [x, y];
   }
 
+  public sinPhi(x1: number, y1: number, x2: number, y2: number): number {
+    const phi1 = this.inverseRadians(x1, y1)[1];
+    const phi2 = this.inverseRadians(x2, y2)[1];
+    const phi = (phi1 + phi2) / 2;
+    return Math.sin(phi);
+  }
+
+  public ttCorrection(x1: number, y1: number, x2: number, y2: number): number {
+    const a = this.a;
+    const b = this.b;
+    const x0 = this.falseEasting;
+    const sinPhi = this.sinPhi(x1, y1, x2, y2);
+
+    const xi = x1 - x0;
+    const xj = x2 - x0;
+    const bOverA = b / a;
+    const esq = 1 - bOverA * bOverA;
+    const r = b / (1 - esq * (sinPhi * sinPhi));
+    const rsq = r * r;
+    const rsq6 = rsq * 6;
+    const x = xj + xi * 2;
+    let tt = (y2 - y1) * x / rsq6 * (1 - x * x / (rsq * 27));
+    if (tt < 0) {
+      tt = -tt;
+    }
+    return Angle.toDegrees(tt) * 3600 % 60;
+  }
+
+  public lineScaleFactor(x1: number, y1: number, x2: number, y2: number): number {
+    const a = this.a;
+    const b = this.b;
+    const x0 = this.falseEasting;
+    const sf = this.scaleFactor;
+
+    const sinPhi = this.sinPhi(x1, y1, x2, y2);
+
+    const xi = x1 - x0;
+    const xj = x2 - x0;
+    const bOverA = b / a;
+    const esq = 1 - bOverA * bOverA;
+    const r = b / (1 - esq * (sinPhi * sinPhi));
+    const rsq = r * r;
+    const rsq6 = rsq * 6;
+    const xusq = xi * xi + xi * xj + xj * xj;
+    return sf * (xusq / rsq6 * (xusq / (rsq * 36) + 1) + 1);
+  }
 }

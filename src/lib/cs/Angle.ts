@@ -1,6 +1,7 @@
 export class Angle {
   static RAD_DEGREE = 0.01745329251994328;
 
+  static PI_TIMES_2 = 2.0 * Math.PI;
 
   static angleDegrees(x1: number, y1: number, x2: number, y2: number): number {
     const width = x2 - x1;

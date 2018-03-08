@@ -8,7 +8,11 @@ export abstract class CS {
 
   abstract angle(x1: number, y1: number, x2: number, y2: number): number;
 
-  abstract distance(x1: number, y1: number, x2: number, y2: number): number;
+  abstract angleEllipsoid(x1: number, y1: number, x2: number, y2: number): number;
+
+  abstract distanceMetres(x1: number, y1: number, x2: number, y2: number): number;
+
+  abstract distanceMetresEllipsoid(x1: number, y1: number, x2: number, y2: number): number;
 
   abstract makePrecise(value: number): number;
 

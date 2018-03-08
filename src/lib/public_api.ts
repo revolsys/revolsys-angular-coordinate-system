@@ -11,9 +11,8 @@ export * from './cs/TransverseMercator';
 export * from './meridian-convergence/meridian-convergence.component';
 export * from './coordinate-system-conversion/coordinate-system-conversion.component';
 export * from './cs-field/cs-field.component';
-export * from './distance-angle/distance-angle.component';
+export * from './line-metrics/line-metrics.component';
 export * from './point-field/point-field.component';
 export * from './point-offset/point-offset.component';
-export * from './scale-factor-tt-correction/scale-factor-tt-correction.component';
 
 export * from './revolsys-angular-coordinate-system.module';
