@@ -49,7 +49,7 @@
           </rs-cs-coordinate-system-field>
         </div>
         <div class="flexRowToColumn"> 
-          <rs-cs-point-field [parentForm]="form" name="fromPoint" [cs]="cs" prefix="From">
+          <rs-cs-point-field [parentForm]="form" name="fromPoint" [cs]="cs" prefix="From" required>
           </rs-cs-point-field>
           <mat-form-field>
             <input matInput formControlName="fromHeight" type="number" min="0" max="5000" placeholder="From Height Marker" />
@@ -67,14 +67,32 @@
           </mat-form-field>  
         </div>
         <div class="flexRowToColumn"> 
-          <rs-cs-point-field [parentForm]="form" name="toPoint" [cs]="cs" prefix="To">
+          <rs-cs-point-field [parentForm]="form" name="toPoint" [cs]="cs" prefix="To" required>
           </rs-cs-point-field>
           <mat-form-field>
             <input matInput formControlName="toHeight" type="number" min="0" max="5000" placeholder="To Height Marker" />
             <mat-hint>metres</mat-hint>
             <mat-hint align="end">0..5000</mat-hint>
           </mat-form-field>  
-       </div>  
+        </div>
+        <div class="flexRowToColumn"> 
+          <mat-form-field>
+            <input matInput formControlName="reducedDirection" placeholder="Reduced Direction">
+            <mat-hint>
+              <span *ngIf="!angleFormat || angleFormat === 'DMS'" matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
+              <span *ngIf="!angleFormat"> or </span>
+              <span *ngIf="!angleFormat || angleFormat === 'decimalDegrees'" matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span>
+            </mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput formControlName="astronomicAzimuth" placeholder="Astronomic Azimuth">
+            <mat-hint>
+              <span *ngIf="!angleFormat || angleFormat === 'DMS'" matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
+              <span *ngIf="!angleFormat"> or </span>
+              <span *ngIf="!angleFormat || angleFormat === 'decimalDegrees'" matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span>
+            </mat-hint>
+          </mat-form-field>
+        </div>  
       </mat-expansion-panel>
     
       <mat-expansion-panel expanded="true" [formGroup]="form" *ngIf="hasResult">
@@ -83,15 +101,15 @@
         </mat-expansion-panel-header>
         <div class="flexRowToColumn"> 
           <mat-form-field>
-            <input matInput [value]="distanceEllipsoid.toFixed(3)" placeholder="Distance" >
+            <input matInput [value]="distanceEllipsoid.toFixed(3)" placeholder="Distance" readonly>
             <mat-hint>metres</mat-hint>
           </mat-form-field>
           <mat-form-field>
-            <input matInput [value]="formatAngle(azimuth1Ellipsoid)" placeholder="Azimuth From -> To" >
+            <input matInput [value]="formatAngle(azimuth1Ellipsoid)" placeholder="Azimuth From -> To" readonly>
             <mat-hint>{{angleFormat}}</mat-hint>  
           </mat-form-field>
           <mat-form-field>
-            <input matInput [value]="formatAngle(azimuth2Ellipsoid)" placeholder="Azimuth To -> From" >
+            <input matInput [value]="formatAngle(azimuth2Ellipsoid)" placeholder="Azimuth To -> From" readonly>
             <mat-hint>{{angleFormat}}</mat-hint>  
           </mat-form-field>
         </div>
@@ -103,35 +121,43 @@
         </mat-expansion-panel-header>
         <div class="flexRowToColumn"> 
           <mat-form-field>
-            <input matInput [value]="distance.toFixed(3)" placeholder="Distance" >
+            <input matInput [value]="distance.toFixed(3)" placeholder="Distance" readonly>
             <mat-hint>metres</mat-hint>
           </mat-form-field>
           <mat-form-field>
-            <input matInput [value]="formatAngle(azimuth1)" placeholder="Azimuth From -> To" >
+            <input matInput [value]="formatAngle(azimuth1)" placeholder="Azimuth From -> To" readonly>
             <mat-hint>{{angleFormat}}</mat-hint>  
           </mat-form-field>
           <mat-form-field>
-            <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" >
+            <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" readonly>
             <mat-hint>{{angleFormat}}</mat-hint>  
           </mat-form-field>
         </div>
       </mat-expansion-panel>
     
-      <mat-expansion-panel expanded="true" [formGroup]="form" *ngIf="hasResult && distanceMarker != null">
+      <mat-expansion-panel expanded="true" [formGroup]="form" *ngIf="hasResult">
         <mat-expansion-panel-header>
           <mat-panel-title>Marker to Marker</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="flexRowToColumn"> 
           <mat-form-field>
-            <input matInput [value]="distanceMarker.toFixed(3)" placeholder="Distance at Height Marker" >
-            <mat-hint>metres</mat-hint>
-          </mat-form-field>
-          <mat-form-field *ngIf="slopeDistance != null">
-            <input matInput [value]="slopeDistance.toFixed(3)" placeholder="Slope Distance" >
+            <input matInput [value]="spatialDistance.toFixed(3)" placeholder="Spatial Distance (Marker)" readonly>
             <mat-hint>metres</mat-hint>
           </mat-form-field>
           <mat-form-field *ngIf="astronomicAzimuth != null">
-            <input matInput [value]="formatAngle(astronomicAzimuth)" placeholder="Astronomic Azimuth" >
+            <input matInput [value]="formatAngle(astronomicAzimuth)" placeholder="Astronomic Azimuth" readonly>
+            <mat-hint>{{angleFormat}}</mat-hint>  
+          </mat-form-field>
+          <mat-form-field *ngIf="slopeDistance != null">
+            <input matInput [value]="slopeDistance.toFixed(3)" placeholder="Slope Distance" readonly>
+            <mat-hint>metres</mat-hint>
+          </mat-form-field>
+          <mat-form-field *ngIf="spatialDirection != null">
+            <input matInput [value]="formatAngle(spatialDirection)" placeholder="Spatial Direction" readonly>
+            <mat-hint>{{angleFormat}}</mat-hint>  
+          </mat-form-field>
+          <mat-form-field *ngIf="geodeticAzimuth != null">
+            <input matInput [value]="formatAngle(geodeticAzimuth)" placeholder="Geodetic Azimuth" readonly>
             <mat-hint>{{angleFormat}}</mat-hint>  
           </mat-form-field>
         </div>
@@ -144,11 +170,11 @@
     
         <div class="flexRowToColumn"> 
           <mat-form-field >
-            <input matInput [value]="lineScaleFactor.toFixed(6)" placeholder="Line Scale Factor" [readonly]="true">
+            <input matInput [value]="lineScaleFactor.toFixed(6)" placeholder="Line Scale Factor" readonly>
           </mat-form-field>
       
           <mat-form-field >
-            <input matInput [value]="ttCorrection.toFixed(2)" placeholder="(T-t) Correction" [readonly]="true">
+            <input matInput [value]="ttCorrection.toFixed(2)" placeholder="(T-t) Correction" readonly>
             <mat-hint>seconds</mat-hint>
           </mat-form-field>
         </div>

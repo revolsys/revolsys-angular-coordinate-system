@@ -20,6 +20,16 @@ import {TransverseMercator} from "../cs/TransverseMercator";
   styleUrls: ['./line-metrics.component.css']
 })
 export class LineMetricsComponent extends AbstractCoordinateSystemComponent implements OnInit {
+  calculations = {
+    "Distance and Angles": ["fromPoint", "fromHeight", "toPoint", "toHeight"],
+    "Distance Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "From Height of Instrument", "From Height of Target", "toPoint", "toHeight", "toDistance", "type"],
+    "Distance Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "toPoint", "toHeight"],
+    "Direction Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "observedDirection"],
+    "Direction Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "reducedDirection"],
+    "Azimuth Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "astronomicAzimuth"],
+    "Azimuth Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight"]
+  };
+
   form: FormGroup;
 
   hasResult = false;
@@ -36,11 +46,15 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
 
   distanceEllipsoid: number;
 
-  distanceMarker: number;
+  spatialDistance: number;
 
   astronomicAzimuth: number;
 
+  geodeticAzimuth: number;
+
   slopeDistance: number;
+
+  spatialDirection: number;
 
   ttCorrection: number;
 
@@ -53,15 +67,17 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
         x: ['', Validators.required],
         y: ['', Validators.required]
       }),
-      fromHeight: null,
-      xi: null,
-      eta: null,
+      fromHeight: ['', [Validators.required, Validators.min(0), Validators.max(5000)]],
+      xi: ['', [Validators.required, Validators.min(-30), Validators.max(30)]],
+      eta: ['', [Validators.required, Validators.min(-30), Validators.max(30)]],
       toPoint: this.fb.group({
         x: ['', Validators.required],
         y: ['', Validators.required]
       }),
-      toHeight: null,
-      cs: this.cs
+      toHeight: ['', [Validators.min(0), Validators.max(5000)]],
+      cs: this.cs,
+      reducedDirection: null,
+      astronomicAzimuth: null
     });
     this.form.valueChanges.subscribe(data => {
       this.calculate(data);
@@ -113,23 +129,32 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       }
       const height1 = parseFloat(data.fromHeight);
       const height2 = parseFloat(data.toHeight);
-      if (!isNaN(height1) && !isNaN(height2) && geoCS) {
-        this.distanceMarker = ellipsoid.distanceMetresZ(lon1, lat1, height1, lon2, lat2, height2);
-        const xi = parseFloat(data.xi) / 3600;
-        const eta = parseFloat(data.eta) / 3600;
-        if (!isNaN(xi) && !isNaN(eta)) {
-          this.astronomicAzimuth = ellipsoid.astronomicAzimuth(lon1, lat1, height1, xi, eta, lon2, lat2, height2);
-          this.slopeDistance = ellipsoid.slopeDistance(lon1, lat1, height1, xi, eta, lon2, lat2, height2, 0, 0, -4.5);
-        } else {
-          this.astronomicAzimuth = null;
-          this.slopeDistance = null;
-        }
+      const xi = parseFloat(data.xi) / 3600;
+      const eta = parseFloat(data.eta) / 3600;
+      const reducedDirection = Angle.toDecimalDegrees(data.reducedDirection);
+      const astronomicAzimuth = Angle.toDecimalDegrees(data.astronomicAzimuth);
+      if (this.isCalculationValid('Distance Reduction from the Ellipsoid')) {
+        this.spatialDistance = ellipsoid.distanceMetresZ(lon1, lat1, height1, lon2, lat2, height2);
       } else {
-        this.distanceMarker = null;
+        this.spatialDistance = null;
+      }
+      if (this.isCalculationValid('Direction Reduction from the Ellipsoid')) {
+        this.spatialDirection = ellipsoid.spatialDirection(lon1, lat1, height1, xi, eta, lon2, lat2, height2, 0, 0, -4.5, reducedDirection);
+      } else {
+        this.spatialDirection = null;
+      }
+      if (this.isCalculationValid('Azimuth Reduction from the Ellipsoid')) {
+        this.astronomicAzimuth = ellipsoid.astronomicAzimuth(lon1, lat1, height1, xi, eta, lon2, lat2, height2);
+        this.slopeDistance = ellipsoid.slopeDistance(lon1, lat1, height1, lon2, lat2, height2, 0, 0, -4.5);
+      } else {
         this.astronomicAzimuth = null;
         this.slopeDistance = null;
       }
-
+      if (this.isCalculationValid('Azimuth Reduction to the Ellipsoid')) {
+        this.geodeticAzimuth = ellipsoid.geodeticAzimuth(lon1, lat1, height1, xi, eta, lon2, lat2, height2, 0, 0, -4.5, astronomicAzimuth);
+      } else {
+        this.geodeticAzimuth = null;
+      }
     } else {
       this.hasResult = false;
     }
@@ -159,7 +184,9 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       },
       toHeight: 20,
       xi: 10,
-      eta: 10
+      eta: 10,
+      reducedDirection: 60,
+      astronomicAzimuth: 60
     });
 
     //    this.form.patchValue({
@@ -172,5 +199,20 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     //        y: '51'
     //      }
     //    });
+  }
+
+  isCalculationValid(calculationName: string) {
+    const fieldNames = this.calculations[calculationName];
+    if (this.form.valid) {
+      for (const fieldName of fieldNames) {
+        const value = this.form.controls[fieldName].value;
+        if (value === '' || value === null) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 }

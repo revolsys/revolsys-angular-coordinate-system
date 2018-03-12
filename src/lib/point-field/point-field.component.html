@@ -1,6 +1,6 @@
 <div class="flexFields" *ngIf="isGeographic; else projected">
   <mat-form-field [floatLabel]="floatLabel">
-    <input matInput [(ngModel)]="y" placeholder="{{prefix}}Latitude" [readonly]="!editable">
+    <input matInput [(ngModel)]="y" placeholder="{{prefix}}Latitude" [readonly]="!editable" [required]="required">
     <mat-hint>
       <span *ngIf="!angleFormat || angleFormat === 'DMS'" matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
       <span *ngIf="!angleFormat"> or </span>
@@ -9,7 +9,7 @@
   </mat-form-field>
 
   <mat-form-field [floatLabel]="floatLabel">
-    <input matInput [(ngModel)]="x" placeholder="{{prefix}}Longitude" [readonly]="!editable">
+    <input matInput [(ngModel)]="x" placeholder="{{prefix}}Longitude" [readonly]="!editable" [required]="required">
     <mat-hint>
       <span *ngIf="!angleFormat || angleFormat === 'DMS'" matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
       <span *ngIf="!angleFormat"> or </span>
@@ -20,12 +20,12 @@
 <ng-template #projected>
   <div class="flexFields">
     <mat-form-field [floatLabel]="floatLabel">
-     <input matInput [(ngModel)]="x" placeholder="{{prefix}}X (Easting)" [readonly]="!editable">
+     <input matInput [(ngModel)]="x" placeholder="{{prefix}}X (Easting)" [readonly]="!editable" [required]="required">
       <mat-hint>metres</mat-hint>
     </mat-form-field>
     
     <mat-form-field [floatLabel]="floatLabel">
-     <input matInput [(ngModel)]="y" placeholder="{{prefix}}Y (Northing)" [readonly]="!editable">
+     <input matInput [(ngModel)]="y" placeholder="{{prefix}}Y (Northing)" [readonly]="!editable" [required]="required">
       <mat-hint>metres</mat-hint>
     </mat-form-field>
   </div>

@@ -59,7 +59,7 @@ export class Angle {
 
   static toDecimalDegrees(text: string): number {
     if (text) {
-      text = text.trim();
+      text = text.toString().trim();
 
       if (text.length > 0) {
         let negative = false;

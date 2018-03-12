@@ -33,6 +33,9 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
   @Input()
   prefix: string;
 
+  @Input()
+  required = false;
+
   constructor( @Inject(FormBuilder) private fb: FormBuilder) {
     super();
   }
