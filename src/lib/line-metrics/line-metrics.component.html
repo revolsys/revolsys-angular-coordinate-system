@@ -7,7 +7,7 @@
         <mat-expansion-panel-header>
           <mat-panel-title>Description</mat-panel-title>
         </mat-expansion-panel-header>
-        <p>Calculate metrics about the line between two points</p>
+        <p>This utility includes the following calculations for the line between two points.</p>
        
         <h2>Distance and Angle</h2>
         <p>Calculate the distance and azimuths (bearings) between the two points.</p>
@@ -32,11 +32,50 @@
         correction is the angle between the tangent to a geodesic between the two UTM coordinates
         and the grid azimuth between the two points.</p>
         
-        <h2>Marker to Marker</h2>
-       
-        <p>If the from/to height markers are specified the distance between those marker heights will be calculated using the ellipsoid.</p>
+        <h2>Distance Reduction to the Ellipsoid</h2>
+        <p>This utility reduces spatial and horizontal distance to the reference ellipsoid given the
+        geodetic latitude, longitude and ellipsoidal height of the two points. The datum code is NAD83.
+        The user input and data ranges are defined below. The output is the ellipsoidal scale factor
+        and ellipsoidal distance. The ellipsoidal factor is computed as a ratio between the
+        ellipsoidal distance and the spatial or horizontal distance. The height of instrument and
+        target are optional and may be input if required.</p>
         
-        <p>If xi and Eta are also specified the astronomic azimuth and slope distance are also calculated.</p>
+        <h2>Distance Reduction from the Ellipsoid</h2>
+        <p>This utility computes the spatial distance given the geodetic latitude, longitude and
+        ellipsoidal height of two points. The datum code is NAD83. The user input and data ranges
+        are defined below. The output is the spatial distance (marker to marker) in metres.</p>
+        
+        <h2>Direction Reduction to the Ellipsoid</h2>
+        <p>This utility computes the reduction of spatial directions to the reference ellipsoid
+        given the geodetic latitude, longitude and ellipsoidal height of two points. The datum code
+        is NAD83. The user input and data ranges are defined below. The deflection of the vertical
+        in the north-south plane (Xi) is to be input in seconds - positive north. The deflection 
+        of the vertical in the east-west plane (Eta) is to be input in seconds - positive east. 
+        The output is the computed ellipsoidal direction.</p>
+        
+        <h2>Direction Reduction from the Ellipsoid</h2>
+        <p>This utility computes spatial directions given the reduced ellipsoidal direction, the
+        geodetic latitude, longitude and ellipsoidal height of two points. The datum code is NAD83.
+        The user input and data ranges are defined below. The deflection of the vertical in the
+        north-south plane (Xi) is to be input in seconds - positive north. The deflection of the
+        vertical in the east-west plane (Eta) is to be input in seconds - positive east. The output
+        is the computed spatial direction.</p>
+        
+        <h2>Azimuth Reduction to the Ellipsoid</h2>
+        <p>The utility computes the reduction of astronomic azimuths to the reference ellipsoid 
+        given the geodetic latitude, longitude and ellipsoidal height of two points. The datum code 
+        is NAD83. The user input and ranges are defined below. the deflection of the vertical in the 
+        north-south plane (Xi) is to be input in seconds - positive north. The deflection of the 
+        vertical in the east-west plane (Eta) is to be input in seconds - positive east. The output 
+        is the geodetic azimuth.</p>
+        
+        <h2>Azimuth Reduction from the Ellipsoid</h2>
+        <p>This utility computes astronomic azimuth given the geodetic latitude, longitude and
+        ellipsoidal height of two points. The datum code is NAD83. The user input and ranges are
+        defined below. the deflection of the vertical in the north-south plane (Xi) is to be input
+        in seconds - positive north. the deflection of the vertical in the east-west plane (Eta)
+        is to be input in seconds - positive east. The output is the astronomic azimuth and the
+        computed slope distance (marker tomarker) in metres.</p>
       </mat-expansion-panel>
     
       <mat-expansion-panel expanded="true" [formGroup]="form">

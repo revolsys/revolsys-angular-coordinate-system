@@ -9,8 +9,8 @@ import {
 } from '../lib/public_api';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'distance-angle', pathMatch: 'full'},
-  {path: 'line-metrics', component: LineMetricsComponent},
+  {path: '', redirectTo: 'line-calculations', pathMatch: 'full'},
+  {path: 'line-calculations', component: LineMetricsComponent},
   {path: 'point-offset', component: PointOffsetComponent},
   {path: 'coordinate-system-conversion', component: CoordinateSystemConversionComponent},
   {path: 'meridian-convergence', component: MeridianConvergenceComponent},
