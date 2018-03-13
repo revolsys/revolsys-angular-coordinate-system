@@ -69,7 +69,7 @@ export class Angle {
         } else if (text.endsWith('E') || text.endsWith('N')) {
           text = text.substring(0, text.length).trim();
         }
-        const parts = text.split(/[°'":\s]+/);
+        const parts = text.split(/[\*°'":\s]+/);
         let decimalDegrees = 0;
         if (parts.length > 0) {
           decimalDegrees = parseFloat(parts[0]);

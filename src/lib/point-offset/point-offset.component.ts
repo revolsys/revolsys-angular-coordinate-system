@@ -25,10 +25,6 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
 
   hasResult = false;
 
-  longitude2: number;
-
-  latitude2: number;
-
   azimuth2: number;
 
   constructor(private fb: FormBuilder) {
@@ -54,17 +50,24 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
       const azimuth = Angle.toDecimalDegrees(data.azimuth);
       if (x != null && y != null && distance != null && azimuth != null) {
         this.hasResult = true;
+
+        let x2;
+        let y2;
         const result = this.cs.pointOffset(x, y, distance, azimuth);
+        x2 = result[0];
+        y2 = result[1];
+        if (this.cs instanceof GeoCS) {
+          const angleResult = this.cs.ellipsoid.vincenty(Angle.toRadians(-x), Angle.toRadians(y), distance, Angle.toRadians(azimuth));
+          this.azimuth2 = Angle.toDegrees(angleResult[2]);
+        } else {
+          this.azimuth2 = this.cs.angle(x2, y2, x, y);
+        }
         this.resultForm.patchValue({
           toPoint: {
-            x: result[0],
-            y: result[1]
+            x: x2,
+            y: y2
           }
         });
-
-        this.longitude2 = result[0];
-        this.latitude2 = result[1];
-        this.azimuth2 = this.cs.angle(this.longitude2, this.latitude2, x, y);
       } else {
         this.hasResult = false;
       }
@@ -72,13 +75,13 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
   }
 
   ngOnInit() {
-    //    this.form.patchValue({
-    //      point: {
-    //        x: '-121',
-    //        y: '50'
-    //      },
-    //      azimuth: '32.1453936',
-    //      distance: '131935.9627804203'
-    //    });
+    this.form.patchValue({
+      point: {
+        x: '-109 0 0.12345',
+        y: '45 0 0.12345'
+      },
+      azimuth: '12 34 5.68',
+      distance: '1.234'
+    });
   }
 }
