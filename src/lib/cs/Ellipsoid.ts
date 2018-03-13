@@ -137,6 +137,59 @@ export class Ellipsoid {
     return geodeticAzimuth;
   }
 
+  public horizontalEllipsoidFactor(lon1: number, lat1: number, h1: number, lon2: number, lat2: number, h2: number, spatialDistance: number): number {
+    const lambda1 = Angle.toRadians(lon1);
+    const phi1 = Angle.toRadians(lat1);
+    const lambda2 = Angle.toRadians(lon2);
+    const phi2 = Angle.toRadians(lat2);
+    return this.horizontalEllipsoidFactorRadians(lambda1, phi1, h1,
+      lambda2, phi2, h2, spatialDistance);
+  }
+
+  public horizontalEllipsoidFactorRadians(lambda1: number, phi1: number, h1: number, lambda2: number, phi2: number, h2: number, spatialDistance: number): number {
+    const a12 = this.azimuthRadians(lambda1, phi1, lambda2, phi2);
+    const a21 = this.azimuthRadians(lambda2, phi2, lambda1, phi1);
+    const r1 = this.radius(phi1, a12);
+    const r2 = this.radius(phi2, a21);
+
+    const deltaH = Math.abs(h2 - h1);
+    if (deltaH > 30) {
+      return r1 / (r1 + h1);
+    } else {
+      return 1 / Math.sqrt((h1 / r1 + 1) * (h2 / r2 + 1));
+    }
+  }
+
+  public spatialDistance(lon1: number, lat1: number, h1: number, heightOfInstrument: number, heightOfTarget: number, lon2: number, lat2: number, h2: number, spatialDistance: number): number {
+    const lambda1 = Angle.toRadians(lon1);
+    const phi1 = Angle.toRadians(lat1);
+    const lambda2 = Angle.toRadians(lon2);
+    const phi2 = Angle.toRadians(lat2);
+    return this.spatialDistanceRadians(lambda1, phi1, h1, heightOfInstrument, heightOfTarget, lambda2,
+      phi2, h2, spatialDistance);
+  }
+
+  public spatialDistanceRadians(lambda1: number, phi1, h1: number, heightOfInstrument: number, heightOfTarget: number, lambda2: number, phi2, h2: number, spatialDistance: number): number {
+
+    const a12 = this.azimuthRadians(lambda1, phi1, lambda2, phi2);
+    const a21 = this.azimuthRadians(lambda2, phi2, lambda1, phi1);
+    const r1 = this.radius(phi1, a12);
+    const r2 = this.radius(phi2, a21);
+
+    h1 += heightOfInstrument;
+    h2 += heightOfTarget;
+    const deltaH = h2 - h1;
+    const deltaHSq = deltaH * deltaH;
+    if (spatialDistance * spatialDistance - deltaHSq >= 0) {
+      const twor = r1 + r2;
+      const lo = Math
+        .sqrt((spatialDistance * spatialDistance - deltaHSq) / ((h1 / r1 + 1) * (h2 / r2 + 1)));
+      return twor * Math.asin(lo / twor);
+    } else {
+      return spatialDistance;
+    }
+  }
+
   public ellipsoidDirection(lon1: number, lat1: number, h1: number, xsi: number, eta: number,
     lon2: number, lat2: number, h2: number, x0: number, y0: number, z0: number, spatialDirection: number): number {
     const lambda1 = Angle.toRadians(lon1);

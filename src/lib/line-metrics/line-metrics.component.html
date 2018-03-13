@@ -73,12 +73,29 @@
           </mat-form-field>  
         </div>
         <div class="flexRowToColumn"> 
+          <mat-form-field *ngIf="isFieldVisible('heightOfInstrument')">
+            <input matInput formControlName="heightOfInstrument" type="number" min="0" max="999.999" placeholder="Height Of Instrument" />
+            <mat-hint>metres</mat-hint>
+            <mat-hint align="end">0..999.999</mat-hint>
+          </mat-form-field>  
+          <mat-form-field *ngIf="isFieldVisible('heightOfTarget')">
+            <input matInput formControlName="heightOfTarget" type="number" min="0" max="999.999" placeholder="Height Of Target" />
+            <mat-hint>metres</mat-hint>
+            <mat-hint align="end">0..999.999</mat-hint>
+          </mat-form-field>  
+        </div>
+        <div class="flexRowToColumn"> 
           <rs-cs-point-field [parentForm]="form" name="toPoint" [cs]="cs" prefix="To" required>
           </rs-cs-point-field>
           <mat-form-field *ngIf="isFieldVisible('toHeight')">
             <input matInput formControlName="toHeight" type="number" min="0" max="5000" placeholder="To Height Marker" />
             <mat-hint>metres</mat-hint>
             <mat-hint align="end">0..5000</mat-hint>
+          </mat-form-field>  
+          <mat-form-field *ngIf="isFieldVisible('distance')">
+            <input matInput formControlName="distance" type="number" min="0" max="3500000" placeholder="Distance" />
+            <mat-hint>metres</mat-hint>
+            <mat-hint align="end">0..3500000</mat-hint>
           </mat-form-field>  
         </div>
         <div class="flexRowToColumn"> 
@@ -167,15 +184,33 @@
       </mat-expansion-panel>
 
       <mat-expansion-panel expanded="true" [formGroup]="form"
-      *ngIf="spatialDistance != null || astronomicAzimuth != null || slopeDistance != null || spatialDirection != null || ellipsoidDirection != null || geodeticAzimuth != null">
+      *ngIf="horizontalScaleFactor != null || spatialEllipsoidFactor != null || spatialDistance != null || astronomicAzimuth != null || slopeDistance != null || spatialDirection != null || ellipsoidDirection != null || geodeticAzimuth != null">
         <mat-expansion-panel-header>
           <mat-panel-title>Ellipsoid Reductions</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="flexRowToColumn"> 
+          <mat-form-field *ngIf="horizontalScaleFactor != null">
+            <input matInput [value]="horizontalScaleFactor.toFixed(8)" placeholder="Horizontal Ellipsoid Factor" readonly>
+            <mat-hint>metres</mat-hint>
+          </mat-form-field>
+          <mat-form-field *ngIf="horizontalScaleFactor != null">
+            <input matInput [value]="horizontalDistance.toFixed(3)" placeholder="Horizontal Ellipsoidal Distance" readonly>
+            <mat-hint>metres</mat-hint>
+          </mat-form-field>
+          <mat-form-field *ngIf="spatialEllipsoidFactor != null">
+            <input matInput [value]="spatialEllipsoidFactor.toFixed(8)" placeholder="Spatial Ellipsoid Factor" readonly>
+            <mat-hint>metres</mat-hint>
+          </mat-form-field>
+          <mat-form-field *ngIf="spatialEllipsoidalDistance != null">
+            <input matInput [value]="spatialEllipsoidalDistance.toFixed(3)" placeholder="Spatial Ellipsoidal Distance" readonly>
+            <mat-hint>metres</mat-hint>
+          </mat-form-field>
           <mat-form-field *ngIf="spatialDistance != null">
             <input matInput [value]="spatialDistance.toFixed(3)" placeholder="Spatial Distance" readonly>
             <mat-hint>metres</mat-hint>
           </mat-form-field>
+        </div>
+        <div class="flexRowToColumn"> 
           <mat-form-field *ngIf="ellipsoidDirection != null">
             <input matInput [value]="formatAngle(ellipsoidDirection, 3)" placeholder="Ellipsoid Direction" readonly>
             <mat-hint>{{angleFormat}}</mat-hint>  
@@ -184,6 +219,8 @@
             <input matInput [value]="formatAngle(spatialDirection, 3)" placeholder="Spatial Direction" readonly>
             <mat-hint>{{angleFormat}}</mat-hint>  
           </mat-form-field>
+        </div>
+        <div class="flexRowToColumn"> 
           <mat-form-field *ngIf="geodeticAzimuth != null">
             <input matInput [value]="formatAngle(geodeticAzimuth)" placeholder="Geodetic Azimuth" readonly>
             <mat-hint>{{angleFormat}}</mat-hint>  
