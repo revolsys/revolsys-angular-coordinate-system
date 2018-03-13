@@ -20,7 +20,7 @@ export class AbstractCoordinateSystemComponent {
     if (value) {
       if ('DMS' === this.angleFormat) {
         if (decimalPlaces < 0) {
-          decimalPlaces = 5;
+          decimalPlaces = 2;
         }
         return Numbers.degreesToDms(value, decimalPlaces);
       } else if (decimalPlaces < 0) {
