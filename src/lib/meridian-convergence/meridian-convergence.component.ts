@@ -11,7 +11,12 @@ import {FormGroup, FormBuilder} from "@angular/forms";
 @Component({
   selector: 'rs-cs-meridian-convergence',
   templateUrl: './meridian-convergence.component.html',
-  styles: []
+  styles: [`
+.mat-card {
+  max-width: 1024px;
+  margin: 0.5em auto 0.5em auto;
+}
+`]
 })
 export class MeridianConvergenceComponent extends AbstractCoordinateSystemComponent implements OnInit {
   private static UTM_10 = CSI.utmN(10);

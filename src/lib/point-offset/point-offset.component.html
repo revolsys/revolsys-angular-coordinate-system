@@ -1,50 +1,61 @@
 <mat-card>
-   <mat-card-title-group>
-     <mat-card-title>Point Offset</mat-card-title>
-  </mat-card-title-group>
+  <mat-card-title>Point Offset</mat-card-title>
+
   <mat-card-content>
-    <p>Given a point, distance, and azimuth (bearing) calculate the location of a new point.</p>
-   
-    <p>For <a href="https://en.wikipedia.org/wiki/Geographic_coordinate_system">geographic coordinate systems</a>
-    the <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae#Direct_Problem">Vincenty's direct problem formula</a>
-    and coordinate system's ellipsoid is used. Latitude and Longitude coordinates, can be entered as either
-    Degrees, Minutes, and Seconds (DMS) or Decimal degrees. DMS can be in any of the formats 9:9:9.999, 9°9'9.9", or 9 9 9.9.</p>
+    <mat-accordion multi="true">   
+      <mat-expansion-panel expanded="false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Description</mat-panel-title>
+        </mat-expansion-panel-header>
+		    <p>Given a point, distance, and azimuth (bearing) calculate the location of a new point.</p>
+		   
+		    <p>For <a href="https://en.wikipedia.org/wiki/Geographic_coordinate_system">geographic coordinate systems</a>
+		    the <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae#Direct_Problem">Vincenty's direct problem formula</a>
+		    and coordinate system's ellipsoid is used. Latitude and Longitude coordinates, can be entered as either
+		    Degrees, Minutes, and Seconds (DMS) or Decimal degrees. DMS can be in any of the formats 9:9:9.999, 9°9'9.9", or 9 9 9.9.</p>
+		    
+		    <p>For <a href="https://en.wikipedia.org/wiki/Map_projection">projected coordinate systems</a>
+		    the <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem#Pythagorean_trigonometric_identity">Pythagorean trigonometric identity formula</a> are used.</p>
+      </mat-expansion-panel>
     
-    <p>For <a href="https://en.wikipedia.org/wiki/Map_projection">projected coordinate systems</a>
-    the <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem#Pythagorean_trigonometric_identity">Pythagorean trigonometric identity formula</a> are used.</p>
-  </mat-card-content>
-</mat-card>
- 
-<mat-card [formGroup]="form">
-  <div class="flexRowToColumn">
-    <rs-cs-coordinate-system-field formControlName="cs">
-    </rs-cs-coordinate-system-field>
-  
-	  <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From">
-	  </rs-cs-point-field>  
-
-    <mat-form-field class="distance">
-      <input matInput formControlName="distance" placeholder="Distance">
-      <mat-hint>metres</mat-hint>
-    </mat-form-field>
+      <mat-expansion-panel expanded="true" [formGroup]="form">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Input</mat-panel-title>
+        </mat-expansion-panel-header>
+			  <div class="flexRowToColumn">
+			    <rs-cs-coordinate-system-field formControlName="cs">
+			    </rs-cs-coordinate-system-field>
+			  
+				  <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From">
+				  </rs-cs-point-field>  
+			
+			    <mat-form-field class="distance">
+			      <input matInput formControlName="distance" placeholder="Distance">
+			      <mat-hint>metres</mat-hint>
+			    </mat-form-field>
+			    
+			    <mat-form-field class="azimuth">
+			      <input matInput formControlName="azimuth" placeholder="Azimuth From -> To">
+			      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
+			      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span></mat-hint>
+			    </mat-form-field>
+			  </div>
+      </mat-expansion-panel>
     
-    <mat-form-field class="azimuth">
-      <input matInput formControlName="azimuth" placeholder="Azimuth From -> To">
-      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
-      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span></mat-hint>
-    </mat-form-field>
-  </div>
-</mat-card>
-
-<mat-card *ngIf="hasResult">
-  <mat-card-title>Result</mat-card-title>
-  <div class="flexRowToColumn" style="margin-top:10px"> 
-	  <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" [angleFormat]="angleFormat" [editable]="false" prefix="To">
-	  </rs-cs-point-field>  
-
-    <mat-form-field class="azimuth-result">
-      <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" >
-      <mat-hint>{{angleFormat}}</mat-hint>
-    </mat-form-field>
-  </div>
+      <mat-expansion-panel expanded="true" [formGroup]="form" *ngIf="hasResult">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Result</mat-panel-title>
+        </mat-expansion-panel-header>
+			  <div class="flexRowToColumn"> 
+				  <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" [angleFormat]="angleFormat" [editable]="false" prefix="To">
+				  </rs-cs-point-field>  
+			
+			    <mat-form-field class="azimuth-result">
+			      <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" >
+			      <mat-hint>{{angleFormat}}</mat-hint>
+			    </mat-form-field>
+			  </div>
+			</mat-expansion-panel>
+	  </mat-accordion>
+	</mat-card-content>
 </mat-card>

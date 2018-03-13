@@ -1,25 +1,38 @@
 <mat-card>
-   <mat-card-title-group>
-     <mat-card-title>Coordinate System Conversion</mat-card-title>
-  </mat-card-title-group>
+  <mat-card-title>Coordinate System Conversion</mat-card-title>
+
   <mat-card-content>
-    <p>Convert the coordinates from the source to target coordinate system.</p>
+    <mat-accordion multi="true">   
+      <mat-expansion-panel expanded="false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Description</mat-panel-title>
+        </mat-expansion-panel-header>
+         <p>Convert the coordinates from the source to target coordinate system.</p>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel expanded="true" [formGroup]="form">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Input</mat-panel-title>
+        </mat-expansion-panel-header>
+			  <div class="flexRowToColumn">
+			    <rs-cs-coordinate-system-field formControlName="sourceCs" placeholder="Source Coordinate System"></rs-cs-coordinate-system-field>
+			    <rs-cs-coordinate-system-field formControlName="targetCs" placeholder="Target Coordinate System"></rs-cs-coordinate-system-field>
+			
+			    <rs-cs-point-field [parentForm]="form" name="sourcePoint" [cs]="cs" prefix="Source">
+			    </rs-cs-point-field>  
+			  </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel expanded="true" *ngIf="hasResult">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Result</mat-panel-title>
+        </mat-expansion-panel-header>
+			  <div class="flexRowToColumn"> 
+			    <rs-cs-point-field [parentForm]="resultForm" name="targetPoint" [cs]="targetCs" [angleFormat]="angleFormat" prefix="Target" [editable]="false">
+			    </rs-cs-point-field>  
+			  </div>
+      </mat-expansion-panel>
+
+    </mat-accordion>  
   </mat-card-content>
-</mat-card>
-<mat-card [formGroup]="form">
-  <div class="flexRowToColumn">
-    <rs-cs-coordinate-system-field formControlName="sourceCs" placeholder="Source Coordinate System"></rs-cs-coordinate-system-field>
-    <rs-cs-coordinate-system-field formControlName="targetCs" placeholder="Target Coordinate System"></rs-cs-coordinate-system-field>
-
-	  <rs-cs-point-field [parentForm]="form" name="sourcePoint" [cs]="cs" prefix="Source">
-	  </rs-cs-point-field>  
-  </div>
-</mat-card>
-
-<mat-card *ngIf="hasResult">
-  <mat-card-title>Result</mat-card-title>
-  <div class="flexRowToColumn"> 
-    <rs-cs-point-field [parentForm]="resultForm" name="targetPoint" [cs]="targetCs" [angleFormat]="angleFormat" prefix="Target" [editable]="false">
-    </rs-cs-point-field>  
-  </div>
 </mat-card>

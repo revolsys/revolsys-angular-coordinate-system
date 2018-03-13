@@ -34,14 +34,14 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
   constructor(private fb: FormBuilder) {
     super('DMS');
     this.form = this.fb.group({
-      sourcePoint: {
+      sourcePoint: this.fb.group({
         x: null,
         y: null
-      },
-      targetPoint: {
+      }),
+      targetPoint: this.fb.group({
         x: null,
         y: null
-      },
+      }),
       sourceCs: this.cs,
       targetCs: this.targetCs
     });

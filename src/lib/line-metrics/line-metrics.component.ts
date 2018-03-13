@@ -13,6 +13,7 @@ import {CSI} from '../cs/CSI';
 import {Numbers} from '../cs/Numbers';
 import {ProjCS} from "../cs/ProjCS";
 import {TransverseMercator} from "../cs/TransverseMercator";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'rs-cs-line-metrics',
@@ -96,7 +97,10 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
 
   lineScaleFactor: number;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute
+  ) {
     super('DMS');
     this.form = this.fb.group({
       calculationName: 'All',
@@ -218,6 +222,14 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
   }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      const calculationName = params['calculationName'];
+      if (this.calculationNames.indexOf(calculationName) !== -1) {
+        this.form.patchValue({
+          calculationName: calculationName
+        });
+      }
+    });
     //    this.form.patchValue({
     //      cs: CSI.utmN(10),
     //      fromPoint: {
