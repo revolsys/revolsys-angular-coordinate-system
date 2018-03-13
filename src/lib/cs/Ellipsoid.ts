@@ -163,7 +163,7 @@ export class Ellipsoid {
     if (Math.abs(a12) < sing) {
       a21 = pi;
     }
-    if ((d__1 = a12 - pi, Math.abs(d__1)) < sing) {
+    if (Math.abs(a12 - pi) < sing) {
       a21 = 0.;
     }
     den = suss - cucs * ca12;
@@ -771,7 +771,7 @@ export class Ellipsoid {
 
     let phi2 = 0;
     let dnum = sucs + cuss * cosangle;
-    let d__1 = suss - cucs * cosangle;
+    const d__1 = suss - cucs * cosangle;
     let den = (1 - f) * Math.sqrt(sa2 + d__1 * d__1);
     if (Math.abs(dnum) > sing || Math.abs(den) > sing) {
       phi2 = Math.atan2(dnum, den);
@@ -789,7 +789,7 @@ export class Ellipsoid {
     let dlam = dlas - (1. - c) * f * sa * (sigma + c * sinSigma * (cos2Sigma + c * cosSigma * (
       cos2SigmaSq * 2. - 1.)));
     let lambda2 = lambda1 + dlam;
-    if (lambda2 < 0.) {
+    if (lambda2 < 0) {
       lambda2 += Math.PI;
     }
     if (lambda2 > Math.PI) {
@@ -802,8 +802,8 @@ export class Ellipsoid {
     if (Math.abs(angle12) < sing) {
       a21 = Math.PI;
     }
-    if ((d__1 = angle12 - Math.PI, Math.abs(d__1)) < sing) {
-      a21 = 0.;
+    if (Math.abs(angle12 - Math.PI) < sing) {
+      a21 = 0;
     }
     den = suss - cucs * cosangle;
     if (Math.abs(sa) > sing || Math.abs(den) > sing) {
