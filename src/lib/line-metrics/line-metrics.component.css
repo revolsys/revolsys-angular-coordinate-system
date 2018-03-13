@@ -9,9 +9,14 @@
   max-width: 140px;
 }
 
+.calculationName {
+  flex-basis: 250px;
+  max-width: 250px;
+}
 @media (max-width: 768px) {
+  .calculationName,
   .mat-form-field {
-  max-width: auto;
+    max-width: auto;
     width: 100%;
   }
 }

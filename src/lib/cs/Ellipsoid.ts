@@ -137,34 +137,71 @@ export class Ellipsoid {
     return geodeticAzimuth;
   }
 
+  public ellipsoidDirection(lon1: number, lat1: number, h1: number, xsi: number, eta: number,
+    lon2: number, lat2: number, h2: number, x0: number, y0: number, z0: number, spatialDirection: number): number {
+    const lambda1 = Angle.toRadians(lon1);
+    const phi1 = Angle.toRadians(lat1);
+    const lambda2 = Angle.toRadians(lon2);
+    const phi2 = Angle.toRadians(lat2);
+    eta = Angle.toRadians(eta);
+    xsi = Angle.toRadians(xsi);
+    spatialDirection = Angle.toRadians(spatialDirection);
+    const radians = this.ellipsoidDirectionRadians(lambda1, phi1, h1, xsi, eta, lambda2, phi2, h2,
+      x0, y0, z0, spatialDirection);
+    return Angle.toDegrees(radians);
+  }
+
+  public ellipsoidDirectionRadians(lambda1: number, phi1: number, h1: number, xsi: number, eta: number,
+    lambda2: number, phi2: number, h2: number, x0: number, y0: number, z0: number, spatialDirection: number) {
+    const a = this.semiMajorAxis;
+    const b = this.semiMinorAxis;
+
+    const esq = (a * a - b * b) / (a * a);
+
+    const sinPhi1 = Math.sin(phi1);
+    const sinPhi2 = Math.sin(phi2);
+    const d__1 = Math.sqrt(1. - esq * (sinPhi1 * sinPhi1));
+    const d__4 = Math.sqrt(1 - esq * (sinPhi2 * sinPhi2));
+    const mm = (a * (1 - esq) / (d__1 * (d__1 * d__1))
+      + a * (1 - esq) / (d__4 * (d__4 * d__4))) / 2.;
+    const nm = (a / Math.sqrt(1 - esq * (sinPhi1 * sinPhi1))
+      + a / Math.sqrt(1 - esq * (sinPhi2 * sinPhi2))) / 2.;
+
+    const s12 = this.distanceMetresRadians(lambda1, phi1, lambda2, phi2);
+    const a12 = this.azimuthRadians(lambda1, phi1, lambda2, phi2);
+
+    const slopeDistance = this.slopeDistanceRadians(lambda1, phi1, h1, lambda2, phi2, h2, x0,
+      y0, z0);
+
+    const dh = h2 - h1;
+    const c1 = (-xsi * Math.sin(a12) + eta * Math.cos(a12)) * dh / Math.sqrt(slopeDistance * slopeDistance - dh * dh);
+
+    const cosPhi2 = Math.cos(phi2);
+    const c2 = h2 * esq * Math.sin(a12) * Math.cos(a12) * cosPhi2 * cosPhi2 / mm;
+
+    const phim = (phi1 + phi2) / 2;
+    const cosPhim = Math.cos(phim);
+    const c3 = -esq * s12 * s12 * cosPhim * cosPhim * Math.sin(a12 * 2) / (nm * nm * 12);
+    return spatialDirection + c1 + c2 + c3;
+  }
+
   public slopeDistance(lon1: number, lat1: number, h1: number, lon2: number, lat2: number, h2: number, x0: number, y0: number, z0: number): number {
     const lambda1 = Angle.toRadians(lon1);
     const phi1 = Angle.toRadians(lat1);
     const lambda2 = Angle.toRadians(lon2);
     const phi2 = Angle.toRadians(lat2);
-
-    const p1 = this.toCaresian(phi1, lambda1, h1, x0, y0, z0);
-    const p2 = this.toCaresian(phi2, lambda2, h2, x0, y0, z0);
-
-    const deltaX = p1[0] - p2[0];
-    const deltaY = p1[1] - p2[1];
-    const deltaZ = p1[2] - p2[2];
-    const ssq = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
-    const slopeDistance = Math.sqrt(ssq);
-
     return this.slopeDistanceRadians(lambda1, phi1, h1, lambda2, phi2, h2, x0, y0, z0);
   }
 
   public slopeDistanceRadians(lambda1: number, phi1: number, h1: number, lambda2: number, phi2: number, h2: number, x0: number, y0: number, z0: number): number {
-    const p1 = this.toCaresian(phi1, lambda1, h1, x0, y0, z0);
-    const p2 = this.toCaresian(phi2, lambda2, h2, x0, y0, z0);
+    const p1 = this.toCartesian(lambda1, phi1, h1, x0, y0, z0);
+    const p2 = this.toCartesian(lambda2, phi2, h2, x0, y0, z0);
 
     const deltaX = p1[0] - p2[0];
     const deltaY = p1[1] - p2[1];
     const deltaZ = p1[2] - p2[2];
     const ssq = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
     const slopeDistance = Math.sqrt(ssq);
-
     return slopeDistance;
   }
 
@@ -210,7 +247,7 @@ export class Ellipsoid {
     return direction - c1 - c2 - c3;
   }
 
-  private toCaresian(phi: number, rlam: number, h: number, x0: number, y0: number, z0: number): number[] {
+  private toCartesian(lambda: number, phi: number, h: number, x0: number, y0: number, z0: number): number[] {
     const a = this.semiMajorAxis;
     const b = this.semiMinorAxis;
 
@@ -219,8 +256,8 @@ export class Ellipsoid {
     const cp = Math.cos(phi);
 
     const n = a / Math.sqrt(1 - e2 * (sp * sp));
-    const x = x0 + (n + h) * cp * Math.cos(rlam);
-    const y = y0 + (n + h) * cp * Math.sin(rlam);
+    const x = x0 + (n + h) * cp * Math.cos(lambda);
+    const y = y0 + (n + h) * cp * Math.sin(lambda);
     const z = z0 + (n * (1. - e2) + h) * sp;
     return [
       x, y, z

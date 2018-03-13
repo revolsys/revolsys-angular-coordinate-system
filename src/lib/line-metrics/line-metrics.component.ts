@@ -20,8 +20,10 @@ import {TransverseMercator} from "../cs/TransverseMercator";
   styleUrls: ['./line-metrics.component.css']
 })
 export class LineMetricsComponent extends AbstractCoordinateSystemComponent implements OnInit {
-  calculations = {
-    "Distance and Angles": ["fromPoint", "fromHeight", "toPoint", "toHeight"],
+  calculationFieldsByName = {
+    "All": ["fromPoint", "fromHeight", "From Height of Instrument", "From Height of Target", "toPoint", "toHeight", "toDistance", "type", "xi", "eta"],
+    "Distance and Angles": ["fromPoint", "toPoint"],
+    "Line Scale Factor/T-t Correction": ["fromPoint", "toPoint"],
     "Distance Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "From Height of Instrument", "From Height of Target", "toPoint", "toHeight", "toDistance", "type"],
     "Distance Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "toPoint", "toHeight"],
     "Direction Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "observedDirection"],
@@ -29,6 +31,18 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     "Azimuth Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "astronomicAzimuth"],
     "Azimuth Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight"]
   };
+
+  calculationNames = [
+    "All",
+    "Distance and Angles",
+    "Line Scale Factor/T-t Correction",
+    "Distance Reduction to the Ellipsoid",
+    "Distance Reduction from the Ellipsoid",
+    "Direction Reduction to the Ellipsoid",
+    "Direction Reduction from the Ellipsoid",
+    "Azimuth Reduction to the Ellipsoid",
+    "Azimuth Reduction from the Ellipsoid"
+  ];
 
   form: FormGroup;
 
@@ -46,11 +60,15 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
 
   distanceEllipsoid: number;
 
+  ellipsoidDirection: number;
+
   spatialDistance: number;
 
   astronomicAzimuth: number;
 
   geodeticAzimuth: number;
+
+  observedDirection: number;
 
   slopeDistance: number;
 
@@ -63,6 +81,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
   constructor(private fb: FormBuilder) {
     super('DMS');
     this.form = this.fb.group({
+      calculationName: 'All',
       fromPoint: this.fb.group({
         x: ['', Validators.required],
         y: ['', Validators.required]
@@ -77,7 +96,8 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       toHeight: ['', [Validators.min(0), Validators.max(5000)]],
       cs: this.cs,
       reducedDirection: null,
-      astronomicAzimuth: null
+      astronomicAzimuth: null,
+      observedDirection: null
     });
     this.form.valueChanges.subscribe(data => {
       this.calculate(data);
@@ -107,10 +127,16 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       const lat2 = lonLat2[1];
 
       this.hasResult = true;
-      this.distanceEllipsoid = ellipsoid.distanceMetres(lon1, lat1, lon2, lat2);
-      this.azimuth1Ellipsoid = ellipsoid.azimuth(lon1, lat1, lon2, lat2);
-      this.azimuth2Ellipsoid = ellipsoid.azimuth(lon2, lat2, lon1, lat1);
-      if (cs instanceof ProjCS) {
+      if (this.isCalculationValid('Distance and Angles')) {
+        this.distanceEllipsoid = ellipsoid.distanceMetres(lon1, lat1, lon2, lat2);
+        this.azimuth1Ellipsoid = ellipsoid.azimuth(lon1, lat1, lon2, lat2);
+        this.azimuth2Ellipsoid = ellipsoid.azimuth(lon2, lat2, lon1, lat1);
+      } else {
+        this.distanceEllipsoid = null;
+        this.azimuth1Ellipsoid = null;
+        this.azimuth2Ellipsoid = null;
+      }
+      if (this.isCalculationValid('Distance and Angles') && cs instanceof ProjCS) {
         this.distance = cs.distanceMetres(x1, y1, x2, y2);
         this.azimuth1 = cs.angle(x1, y1, x2, y2);
         this.azimuth2 = cs.angle(x2, y2, x1, y1);
@@ -119,8 +145,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
         this.azimuth1 = null;
         this.azimuth2 = null;
       }
-
-      if (cs instanceof TransverseMercator) {
+      if (this.isCalculationValid('Line Scale Factor/T-t Correction') && cs instanceof TransverseMercator) {
         this.lineScaleFactor = cs.lineScaleFactor(x1, y1, x2, y2);
         this.ttCorrection = cs.ttCorrection(x1, y1, x2, y2);
       } else {
@@ -133,15 +158,26 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       const eta = parseFloat(data.eta) / 3600;
       const reducedDirection = Angle.toDecimalDegrees(data.reducedDirection);
       const astronomicAzimuth = Angle.toDecimalDegrees(data.astronomicAzimuth);
+      const observedDirection = Angle.toDecimalDegrees(data.observedDirection);
       if (this.isCalculationValid('Distance Reduction from the Ellipsoid')) {
         this.spatialDistance = ellipsoid.distanceMetresZ(lon1, lat1, height1, lon2, lat2, height2);
       } else {
         this.spatialDistance = null;
       }
+      if (this.isCalculationValid('Direction Reduction to the Ellipsoid')) {
+        this.ellipsoidDirection = ellipsoid.ellipsoidDirection(lon1, lat1, height1, xi, eta, lon2, lat2, height2, 0, 0, -4.5, observedDirection);
+      } else {
+        this.ellipsoidDirection = null;
+      }
       if (this.isCalculationValid('Direction Reduction from the Ellipsoid')) {
         this.spatialDirection = ellipsoid.spatialDirection(lon1, lat1, height1, xi, eta, lon2, lat2, height2, 0, 0, -4.5, reducedDirection);
       } else {
         this.spatialDirection = null;
+      }
+      if (this.isCalculationValid('Azimuth Reduction to the Ellipsoid')) {
+        this.geodeticAzimuth = ellipsoid.geodeticAzimuth(lon1, lat1, height1, xi, eta, lon2, lat2, height2, 0, 0, -4.5, astronomicAzimuth);
+      } else {
+        this.geodeticAzimuth = null;
       }
       if (this.isCalculationValid('Azimuth Reduction from the Ellipsoid')) {
         this.astronomicAzimuth = ellipsoid.astronomicAzimuth(lon1, lat1, height1, xi, eta, lon2, lat2, height2);
@@ -149,11 +185,6 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       } else {
         this.astronomicAzimuth = null;
         this.slopeDistance = null;
-      }
-      if (this.isCalculationValid('Azimuth Reduction to the Ellipsoid')) {
-        this.geodeticAzimuth = ellipsoid.geodeticAzimuth(lon1, lat1, height1, xi, eta, lon2, lat2, height2, 0, 0, -4.5, astronomicAzimuth);
-      } else {
-        this.geodeticAzimuth = null;
       }
     } else {
       this.hasResult = false;
@@ -186,7 +217,8 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       xi: 10,
       eta: 10,
       reducedDirection: 60,
-      astronomicAzimuth: 60
+      astronomicAzimuth: 60,
+      observedDirection: 60
     });
 
     //    this.form.patchValue({
@@ -202,17 +234,36 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
   }
 
   isCalculationValid(calculationName: string) {
-    const fieldNames = this.calculations[calculationName];
-    if (this.form.valid) {
-      for (const fieldName of fieldNames) {
-        const value = this.form.controls[fieldName].value;
-        if (value === '' || value === null) {
-          return false;
+    if (this.calculationName === 'All' || this.calculationName === calculationName) {
+      const fieldNames = this.calculationFieldsByName[calculationName];
+      if (fieldNames) {
+        for (const fieldName of fieldNames) {
+          const control = this.form.controls[fieldName];
+          const value = control.value;
+          if (control.invalid || value === '' || value === null) {
+            return false;
+          }
         }
+        return true;
       }
-      return true;
-    } else {
-      return false;
     }
+    return false;
+  }
+
+  get calculationName(): string {
+    return this.form.controls.calculationName.value;
+  }
+  get fieldNames(): string[] {
+    const name = this.calculationName;
+    const fieldNames = this.calculationFieldsByName[name];
+    if (fieldNames) {
+      return fieldNames;
+    } else {
+      return [];
+    }
+  }
+
+  isFieldVisible(fieldName: string): boolean {
+    return this.fieldNames.indexOf(fieldName) !== -1;
   }
 }
