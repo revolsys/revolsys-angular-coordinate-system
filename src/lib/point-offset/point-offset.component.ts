@@ -58,7 +58,7 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
         y2 = result[1];
         if (this.cs instanceof GeoCS) {
           const angleResult = this.cs.ellipsoid.vincenty(Angle.toRadians(-x), Angle.toRadians(y), distance, Angle.toRadians(azimuth));
-          this.azimuth2 = Angle.toDegrees(angleResult[2]);
+          this.azimuth2 = Angle.toDegrees360(angleResult[2]);
         } else {
           this.azimuth2 = this.cs.angle(x2, y2, x, y);
         }

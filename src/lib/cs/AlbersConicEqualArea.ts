@@ -95,7 +95,10 @@ export class AlbersConicEqualArea extends ProjCS {
     } else {
       phi = li;
     }
-    return [Angle.toDegrees(lambda), Angle.toDegrees(phi)];
+    return [
+      Angle.toDegrees(lambda),
+      Angle.toDegrees(phi)
+    ];
   }
   private m(phi: number): number {
     const sinPhi = Math.sin(phi);

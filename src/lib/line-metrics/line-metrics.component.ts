@@ -30,7 +30,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     "Distance Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "toPoint", "toHeight"],
     "Direction Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "observedDirection"],
     "Direction Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "reducedDirection"],
-    "Azimuth Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "astronomicAzimuth"],
+    "Azimuth Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "astronomicAzimuth"],
     "Azimuth Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight"]
   };
 
@@ -230,6 +230,8 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
         });
       }
     });
+    this.calculate();
+
     //    this.form.patchValue({
     //      cs: CSI.utmN(10),
     //      fromPoint: {
@@ -242,26 +244,26 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     //      },
     //    });
 
-    //    this.form.patchValue({
-    //      fromPoint: {
-    //        x: '-109',
-    //        y: '45'
-    //      },
-    //      fromHeight: 10,
-    //      toPoint: {
-    //        x: '-110',
-    //        y: '46'
-    //      },
-    //      toHeight: 20,
-    //      xi: 10,
-    //      eta: 10,
-    //      reducedDirection: 60,
-    //      astronomicAzimuth: 60,
-    //      observedDirection: 60,
-    //      heightOfInstrument: 30,
-    //      heightOfTarget: 40,
-    //      distance: 135866.850
-    //    });
+    this.form.patchValue({
+      fromPoint: {
+        x: '-135 55 55.123456',
+        y: '55 55 55.123456'
+      },
+      fromHeight: 12.345,
+      toPoint: {
+        x: '-135 55 54.123456',
+        y: '55 55 54.123456'
+      },
+      toHeight: 56.789,
+      xi: 10,
+      eta: 10,
+      reducedDirection: 60,
+      astronomicAzimuth: 60,
+      observedDirection: 60,
+      heightOfInstrument: 23.456,
+      heightOfTarget: 34.567,
+      distance: 12.345
+    });
 
     //    this.form.patchValue({
     //      fromPoint: {
@@ -273,7 +275,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     //        y: '51'
     //      }
     //    });
-    this.calculate();
+
   }
 
   isCalculationValid(calculationName: string) {
@@ -287,8 +289,6 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
             if (control.invalid || value === '' || value === null) {
               return false;
             }
-          } else {
-            console.log(fieldName);
           }
         }
         return true;

@@ -128,7 +128,7 @@ export class MeridianConvergenceComponent extends AbstractCoordinateSystemCompon
       * (dlamSq * cpSq / 3.0 * (etaSq * 3 + 1 + etaSq * etaSq * 2) + 1
         + dlamSq * dlamSq * cpSq * cpSq / 15.0 * (2 - tSq));
 
-    return Angle.toDegrees(meridianConvegence);
+    return Angle.toDegrees360(meridianConvegence);
   }
 
 }

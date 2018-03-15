@@ -41,8 +41,123 @@ export class Ellipsoid {
     return this.b;
   }
 
+  vincentyInverse(lambda1: number, phi1: number, lambda2: number, phi2: number): number[] {
+    const sing = 1e-12;
+    if (Math.abs(phi1 - phi2) <= sing && Math.abs(lambda1 - lambda2) <= sing) {
+      return [0, 0, 0];
+    }
+
+    const tpi = Math.PI * 2.;
+    if (lambda1 > 0 && lambda1 < Math.PI) {
+      lambda1 = tpi - lambda1;
+    }
+    if (lambda2 > 0 && lambda2 < Math.PI) {
+      lambda2 = tpi - lambda2;
+    }
+
+    const a = this.a;
+    //    const b = this.b;
+    const b = 6356752.314;
+    const f = (a - b) / a;
+
+    const b2 = b * b;
+    const omf = 1 - f;
+
+    const pot = Math.PI / 2;
+    let u1 = pot;
+    if (phi1 < 0) {
+      u1 = -u1;
+    }
+    if (Math.abs(Math.abs(phi1) - pot) > sing) {
+      u1 = Math.atan(omf * Math.tan(phi1));
+    }
+    const su1 = Math.sin(u1);
+    const cu1 = Math.cos(u1);
+    let u2 = pot;
+    if (phi2 < 0.) {
+      u2 = -u2;
+    }
+    if (Math.abs(Math.abs(phi2) - pot) > sing) {
+      u2 = Math.atan(omf * Math.tan(phi2));
+    }
+    const su2 = Math.sin(u2);
+    const cu2 = Math.cos(u2);
+    const cu1su2 = cu1 * su2;
+    const su1cu2 = su1 * cu2;
+    const su1su2 = su1 * su2;
+    const cu1cu2 = cu1 * cu2;
+
+    let iter = 0;
+    let dlon = lambda2 - lambda1;
+    if ((Math.abs(dlon - Math.PI)) < sing && Math.abs(phi1) < sing && Math.abs(phi2) < sing) {
+      return null;
+    }
+    let sig;
+    let sdlas;
+    let cdlas;
+    let ssig;
+    let csig;
+    let ctsm;
+    let ctsm2;
+    let calph2;
+
+    let dlas = dlon;
+    do {
+      sdlas = Math.sin(dlas);
+      cdlas = Math.cos(dlas);
+      const d__1 = cu2 * sdlas;
+      const d__2 = cu1su2 - su1cu2 * cdlas;
+      ssig = Math.sqrt(d__1 * d__1 + d__2 * d__2);
+      csig = su1su2 + cu1cu2 * cdlas;
+      const tsig = ssig / csig;
+      sig = Math.acos(csig);
+      const salpha = cu1cu2 * sdlas / ssig;
+      calph2 = 1. - salpha * salpha;
+      ctsm = 0.;
+      if (Math.abs(calph2) > sing) {
+        ctsm = csig - su1su2 * 2. / calph2;
+      }
+      ctsm2 = ctsm * ctsm;
+      let c = f / 16. * calph2 * (f * (4. - calph2 * 3.) + 4.);
+      let dlasup = dlon + (1. - c) * f * salpha * (sig + c * ssig * (ctsm + c *
+        csig * (ctsm2 * 2. - 1.)));
+      if ((Math.abs(dlasup - dlas)) < sing) {
+        break;
+      }
+      dlas = dlasup;
+      ++iter;
+      if (iter > 50) {
+        return null;
+      }
+    } while (true);
+
+
+    const usq = calph2 * (a * a - b2) / b2;
+    const a3 = usq / 16384. * (usq * (usq * (320. - usq * 175.) - 768.) + 4096.) + 1.;
+    const b4 = usq / 1024. * (usq * (usq * (74. - usq * 47.) - 128.) + 256.);
+    const delsig = b4 * ssig * (ctsm + b4 / 4. * (csig * (ctsm2 * 2. - 1.) - b4 /
+      6. * ctsm * (ssig * ssig * 4. - 3.) * (ctsm2 * 4. - 3.)));
+    const s12 = b * a3 * (sig - delsig);
+
+    let a12 = Math.atan2(cu2 * sdlas, cu1su2 - su1cu2 * cdlas);
+    let a21 = Math.atan2(-cu1 * sdlas, su1cu2 - cu1su2 * cdlas);
+    if (a12 > tpi) {
+      a12 -= tpi;
+    }
+    if (a12 < 0.) {
+      a12 += tpi;
+    }
+    if (a21 > tpi) {
+      a21 -= tpi;
+    }
+    if (a21 < 0.) {
+      a21 += tpi;
+    }
+    return [s12, a12, a21];
+  }
+
   vincenty(lambda1: number, phi1: number, s12: number, a12: number): number[] {
-    const pi = 3.141592653589793;
+    const pi = Math.PI;
     const sing = 1e-12;
     const a = this.a;
     const b = this.b;
@@ -221,7 +336,7 @@ export class Ellipsoid {
     if (spaz < 0) {
       spaz = Angle.PI_TIMES_2 + spaz;
     }
-    return Angle.toDegrees(spaz);
+    return Angle.toDegrees360(spaz);
   }
 
 
@@ -237,7 +352,7 @@ export class Ellipsoid {
     eta = Angle.toRadians(eta);
     const radians = this.geodeticAzimuthRadians(lambda1, phi1, h1, xsi, eta, lambda2, phi2, h2,
       x0, y0, z0, spaz);
-    return Angle.toDegrees(radians);
+    return Angle.toDegrees360(radians);
   }
 
   public geodeticAzimuthRadians(lambda1: number, phi1: number, h1: number,
@@ -286,11 +401,11 @@ export class Ellipsoid {
   }
 
   public horizontalEllipsoidFactorRadians(lambda1: number, phi1: number, h1: number, lambda2: number, phi2: number, h2: number, spatialDistance: number): number {
-    const a12 = this.azimuthRadians(lambda1, phi1, lambda2, phi2);
-    const a21 = this.azimuthRadians(lambda2, phi2, lambda1, phi1);
+    const distanceAndAngles = this.vincentyInverse(lambda1, phi1, lambda2, phi2);
+    const a12 = distanceAndAngles[1];
+    const a21 = distanceAndAngles[2];
     const r1 = this.radius(phi1, a12);
     const r2 = this.radius(phi2, a21);
-
     const deltaH = Math.abs(h2 - h1);
     if (deltaH > 30) {
       return r1 / (r1 + h1);
@@ -340,7 +455,7 @@ export class Ellipsoid {
     spatialDirection = Angle.toRadians(spatialDirection);
     const radians = this.ellipsoidDirectionRadians(lambda1, phi1, h1, xsi, eta, lambda2, phi2, h2,
       x0, y0, z0, spatialDirection);
-    return Angle.toDegrees(radians);
+    return Angle.toDegrees360(radians);
   }
 
   public ellipsoidDirectionRadians(lambda1: number, phi1: number, h1: number, xsi: number, eta: number,
@@ -463,7 +578,7 @@ export class Ellipsoid {
     const phi2 = Angle.toRadians(lat2);
 
     const azimuth = this.azimuthRadians(lambda1, phi1, lambda2, phi2);
-    return Numbers.makePrecise(precision, Angle.toDegrees(azimuth));
+    return Numbers.makePrecise(precision, Angle.toDegrees360(azimuth));
   }
 
   azimuthRadians(lambda1: number, phi1: number, lambda2: number, phi2: number): number {
@@ -528,7 +643,7 @@ export class Ellipsoid {
     const phi2 = Angle.toRadians(lat2);
 
     const azimuth = this.azimuthBackwardsRadians(lambda1, phi1, lambda2, phi2);
-    return Numbers.makePrecise(precision, Angle.toDegrees(azimuth));
+    return Numbers.makePrecise(precision, Angle.toDegrees360(azimuth));
   }
 
   azimuthBackwardsRadians(lambda1: number, phi1: number, lambda2: number, phi2: number): number {
@@ -657,11 +772,16 @@ export class Ellipsoid {
 
   public radius(lat, alpha): number {
     const phi = Angle.toRadians(lat);
-    const ecc = this.eccentricitySquared;
+
+    const a = this.a;
+    const b = this.b;
+    const f = (a - b) / a;
+    const ecc = f * (2. - f);
+
     const sinPhi = Math.sin(phi);
     const denom = Math.sqrt(1. - ecc * (sinPhi * sinPhi));
-    const pvrad = this.semiMajorAxis / denom;
-    const merrad = this.semiMajorAxis * (1. - ecc) / (denom * (denom * denom));
+    const pvrad = a / denom;
+    const merrad = a * (1. - ecc) / (denom * (denom * denom));
     const cosAlpha = Math.cos(alpha);
     const sinAlpha = Math.sin(alpha);
     return pvrad * merrad / (pvrad * (cosAlpha * cosAlpha) + merrad * (sinAlpha * sinAlpha));
@@ -816,8 +936,8 @@ export class Ellipsoid {
       a21 += Math.PI;
     }
     return [
-      Angle.toDegrees180(-lambda2),
-      Angle.toDegrees180(phi2)
+      Angle.toDegrees(-lambda2),
+      Angle.toDegrees(phi2)
     ];
   }
 }
