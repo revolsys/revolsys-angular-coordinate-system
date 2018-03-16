@@ -100,23 +100,47 @@ export class Angle {
     return null;
   }
 
-  static toDegreesMinutesSeconds(decimalDegrees: number): string {
-    if (decimalDegrees !== null) {
-      const degrees = Math.floor(decimalDegrees);
-      let text = degrees + '°';
-      const decimal = decimalDegrees - degrees;
-      const minutes = Math.floor(decimal * 60);
-      if (minutes < 10) {
-        text += '0';
-      }
-      text += minutes + '\'';
-      const seconds = (decimal * 3600) % 60;
-      if (seconds < 10) {
-        text += '0';
-      }
-      text += seconds + '\'';
-      return text;
+  static toDegreesMinutesSeconds(angle: any, secondsDecimalPlaces?: number): string {
+    let text = '';
+    if (angle < 0) {
+      text = '-';
+      angle = -angle;
     }
-    return null;
+    const degrees = Math.floor(angle);
+    const minutes = Math.floor(angle * 60) % 60;
+    const seconds = angle * 3600 % 60;
+
+    text += degrees;
+    text += ' ';
+    if (minutes < 10) {
+      text += '0';
+    }
+    text += minutes;
+    text += ' ';
+    if (seconds < 10) {
+      text += '0';
+    }
+    if (secondsDecimalPlaces === undefined) {
+      text += seconds;
+    } else {
+      text += seconds.toFixed(secondsDecimalPlaces);
+    }
+    return text;
+  }
+
+  static toDegreesMinutesSecondsLat(angle: any, secondsDecimalPlaces?: number): string {
+    if (angle < 0) {
+      return this.toDegreesMinutesSeconds(-angle, secondsDecimalPlaces) + 'S';
+    } else {
+      return this.toDegreesMinutesSeconds(angle, secondsDecimalPlaces) + 'N';
+    }
+  }
+
+  static toDegreesMinutesSecondsLon(angle: any, secondsDecimalPlaces?: number): string {
+    if (angle < 0) {
+      return this.toDegreesMinutesSeconds(-angle, secondsDecimalPlaces) + 'W';
+    } else {
+      return this.toDegreesMinutesSeconds(angle, secondsDecimalPlaces) + 'E';
+    }
   }
 }

@@ -1,3 +1,4 @@
+import {Angle} from "./cs/Angle";
 import {CS} from "./cs/CS";
 import {Input} from '@angular/core';
 import {GeoCS} from './cs/GeoCS';
@@ -22,7 +23,7 @@ export class AbstractCoordinateSystemComponent {
         if (decimalPlaces < 0) {
           decimalPlaces = 2;
         }
-        return Numbers.degreesToDms(value, decimalPlaces);
+        return Angle.toDegreesMinutesSeconds(value, decimalPlaces);
       } else if (decimalPlaces < 0) {
         return value.toFixed(2);
       } else {
@@ -37,7 +38,7 @@ export class AbstractCoordinateSystemComponent {
     if (value) {
       if (this.cs instanceof GeoCS) {
         if ('DMS' === this.angleFormat) {
-          return Numbers.degreesToDmsLon(value, 5);
+          return Angle.toDegreesMinutesSecondsLon(value, 5);
         } else {
           return value.toString();
         }
@@ -53,7 +54,7 @@ export class AbstractCoordinateSystemComponent {
     if (value) {
       if (this.cs instanceof GeoCS) {
         if ('DMS' === this.angleFormat) {
-          return Numbers.degreesToDmsLat(value, 5);
+          return Angle.toDegreesMinutesSecondsLat(value, 5);
         } else {
           return value.toString();
         }
