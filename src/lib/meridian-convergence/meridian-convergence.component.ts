@@ -81,7 +81,7 @@ export class MeridianConvergenceComponent extends AbstractCoordinateSystemCompon
     const a = geoCs.ellipsoid.semiMajorAxis;
     const b = geoCs.ellipsoid.semiMinorAxis;
 
-    const sf1 = projCs.scaleFactor;
+    const sf1 = projCs.ko;
     const centralMeridan = -projCs.centralMeridan;
 
 

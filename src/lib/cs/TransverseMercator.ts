@@ -7,44 +7,31 @@ export class TransverseMercator extends ProjCS {
 
   private b: number;
 
-  private ePow4: number;
+  private a0: number;
 
-  private ePow6: number;
+  private a2: number;
 
-  private ePrimeSq: number;
+  private a4: number;
 
-  private eSq: number;
+  private a6: number;
 
-  private sqrt1MinusESq: number;
+  private a8: number;
 
-  private k0: number;
 
-  private lambda0: number;
+  private λo: number;
 
   private m0: number;
 
   public get x0(): number {
-    return this.falseEasting;
+    return this.xo;
   }
 
 
   public get y0(): number {
-    return this.falseNorthing;
+    return this.yo;
   }
 
-  private e1Time2Div2MinusE1Pow3Times27Div32: number;
-
-  private e1Pow2Times21Div16MinusE1Pow4Times55Div32: number;
-
-  private e1Pow3Times151Div96: number;
-
-  private e1Pow4Times1097Div512: number;
-
-  private aTimes1MinusEsqDiv4MinesEPow4Times3Div64MinusEPow6Times5Div256: number;
-
-  private ePrimeSqTimes9: number;
-
-  private ePrimeSqTimes8: number;
+  private e: number;
 
   constructor(
     id: number,
@@ -52,85 +39,94 @@ export class TransverseMercator extends ProjCS {
     geoCs: GeoCS,
     public readonly latitudeOfOrigin: number,
     public readonly centralMeridan: number,
-    public readonly scaleFactor: number,
-    public readonly falseEasting: number,
-    public readonly falseNorthing: number,
+    public readonly ko: number,
+    public readonly xo: number,
+    public readonly yo: number,
   ) {
     super(id, name, geoCs);
     const latitudeOfNaturalOrigin = latitudeOfOrigin;
     const centralMeridian = centralMeridan;
 
     const ellipsoid = this.geoCS.ellipsoid;
-    this.lambda0 = Angle.toRadians(centralMeridian);
+    this.λo = Angle.toRadians(centralMeridian);
     this.a = ellipsoid.semiMajorAxis;
     this.b = ellipsoid.semiMinorAxis;
-    this.k0 = scaleFactor;
-    const phi0 = Angle.toRadians(latitudeOfNaturalOrigin);
-    this.eSq = ellipsoid.eccentricitySquared;
-    this.sqrt1MinusESq = Math.sqrt(1 - this.eSq);
 
-    this.ePow4 = this.eSq * this.eSq;
-    this.ePow6 = this.ePow4 * this.eSq;
-    this.m0 = this.m(phi0);
-    this.ePrimeSq = this.eSq / (1 - this.eSq);
-    this.ePrimeSqTimes9 = 9 * this.ePrimeSq;
-    this.ePrimeSqTimes8 = 8 * this.ePrimeSq;
+    const e2 = (this.a * this.a - this.b * this.b) / (this.a * this.a);
+    this.e = Math.sqrt(e2);
 
-    const e1 = (1 - this.sqrt1MinusESq) / (1 + this.sqrt1MinusESq);
-    const e1Pow2 = e1 * e1;
-    const e1Pow3 = e1Pow2 * e1;
-    const e1Pow4 = e1Pow2 * e1Pow2;
-    this.e1Time2Div2MinusE1Pow3Times27Div32 = e1 * 3 / 2 - e1Pow3 * 27 / 32;
-    this.e1Pow2Times21Div16MinusE1Pow4Times55Div32 = e1Pow2 * 21 / 16 - e1Pow4 * 55 / 32;
-    this.e1Pow3Times151Div96 = 151 * e1Pow3 / 96;
-    this.e1Pow4Times1097Div512 = 1097 * e1Pow4 / 512;
-    this.aTimes1MinusEsqDiv4MinesEPow4Times3Div64MinusEPow6Times5Div256 = this.a
-      * (1 - this.eSq / 4 - this.ePow4 * 3 / 64 - this.ePow6 * 5 / 256);
+    const e4 = e2 * e2;
+    const e6 = e4 * e2;
+    const e8 = e6 * e2;
+    this.a0 = 1 - e2 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
+    this.a2 = (e2 + e4 / 4. + e6 * 15. / 128. - e8 * 455. / 4096.) * .375;
+    this.a4 = (e4 + e6 * 3. / 4. - e8 * 77. / 128.) * .05859375;
+    this.a6 = (e6 - e8 * 41. / 32.) * .011393229166666666;
+    this.a8 = e8 * -315. / 131072.;
   }
 
   public inverseRadians(x: number, y: number): number[] {
-    const eSq = this.eSq;
+    x = (x - this.xo) / this.ko;
+    y /= this.ko;
     const a = this.a;
-    const k0 = this.k0;
-    const ePrimeSq = this.ePrimeSq;
+    const b = this.b;
+    const e = this.e;
 
-    const m = this.m0 + (y - this.y0) / k0;
-    const mu = m / this.aTimes1MinusEsqDiv4MinesEPow4Times3Div64MinusEPow6Times5Div256;
-    const phi1 = mu + this.e1Time2Div2MinusE1Pow3Times27Div32 * Math.sin(2 * mu)
-      + this.e1Pow2Times21Div16MinusE1Pow4Times55Div32 * Math.sin(4 * mu)
-      + this.e1Pow3Times151Div96 * Math.sin(6 * mu) + this.e1Pow4Times1097Div512 * Math.sin(8 * mu);
-    const cosPhi1 = Math.cos(phi1);
-    const sinPhi = Math.sin(phi1);
-    const tanPhi1 = Math.tan(phi1);
+    let phi1 = y / a;
+    let dphi;
+    do {
+      dphi = (a * (this.a0 * phi1 - this.a2 * Math.sin(phi1 * 2) + this.a4 * Math.sin(phi1 * 4)
+        - this.a6 * Math.sin(phi1 * 6) + this.a8 * Math.sin(phi1 * 8)) - y)
+        / (a * (this.a0 - this.a2 * 2 * Math.cos(phi1 * 2) + this.a4 * 4. * Math.cos(phi1 * 4)
+          - this.a6 * 6 * Math.cos(phi1 * 6) + this.a8 * 8 * Math.cos(phi1 * 8)));
+      phi1 -= dphi;
+    } while (Math.abs(dphi) >= 1e-15);
 
-    const oneMinusESqSinPhi1Sq = 1 - eSq * sinPhi * sinPhi;
-    const nu1 = a / Math.sqrt(oneMinusESqSinPhi1Sq);
-    const rho1 = a * (1 - eSq) / (oneMinusESqSinPhi1Sq * Math.sqrt(oneMinusESqSinPhi1Sq));
-    const c1 = ePrimeSq * cosPhi1 * cosPhi1;
-    const d = (x - this.x0) / (nu1 * k0);
-    const d2 = d * d;
-    const d3 = d2 * d;
-    const d4 = d2 * d2;
-    const d5 = d4 * d;
-    const d6 = d4 * d2;
-    const t1 = tanPhi1 * tanPhi1;
+    const t = Math.tan(phi1);
+    const tp2 = t * t;
+    const tp4 = tp2 * tp2;
+    const tp6 = tp2 * tp4;
 
-    const c1Sq = c1 * c1;
-    const t1Sq = t1 * t1;
-    const phi = phi1 - nu1 * tanPhi1 / rho1
-      * (d2 / 2 - (5 + 3 * t1 + 10 * c1 - 4 * c1Sq - this.ePrimeSqTimes9) * d4 / 24
-        + (61 + 90 * t1 + 298 * c1 + 45 * t1Sq - 252 * ePrimeSq - 3 * c1Sq) * d6 / 720);
+    const sp = Math.sin(phi1);
+    const sp2 = sp * sp;
+    const cp = Math.cos(phi1);
 
-    const lambda = this.lambda0 + (d - (1 + 2 * t1 + c1) * d3 / 6
-      + (5 - 2 * c1 + 28 * t1 - 3 * c1Sq + this.ePrimeSqTimes8 + 24 * t1Sq) * d5 / 120) / cosPhi1;
+    const eta = Math.sqrt((a * a - b * b) / (b * b) * (cp * cp));
+    const etap2 = eta * eta;
+    const etap4 = etap2 * etap2;
+    const etap6 = etap2 * etap4;
+    const etap8 = etap4 * etap4;
+    const dn = a / Math.sqrt(1. - e * e * (sp * sp));
+    const d__2 = 1. - e * e * sp2;
+    const dm = a * (1 - e * e) / Math.sqrt(d__2 * (d__2 * d__2));
+    const xbydn = x / dn;
+
+    const φ = phi1 + t * (-(x * x) / (dm * 2 * dn)
+      + xbydn * (xbydn * xbydn) * x / (dm * 24)
+      * (tp2 * 3 + 5 + etap2 - etap4 * 4. - etap2 * 9 * tp2)
+      - xbydn * (xbydn * xbydn * xbydn * xbydn) * x / (dm * 720)
+      * (tp2 * 90 + 61 + etap2 * 46 + tp4 * 45 - tp2 * 252 * etap2 - etap4 * 3 + etap6 * 100
+        - tp2 * 66 * etap4 - tp4 * 90 * etap2 + etap8 * 88 + tp4 * 225 * etap4 + tp2 * 84. * etap6
+        - tp2 * 192. * etap8)
+      + xbydn * xbydn * xbydn * (xbydn * xbydn * xbydn * xbydn) * x / (dm * 40320)
+      * (tp2 * 3633 + 1385 + tp4 * 4095 + tp6 * 1574));
+
+    const λ = this.λo + (xbydn - xbydn * (xbydn * xbydn) / 6 * (tp2 * 2 + 1. + etap2)
+      + xbydn * (xbydn * xbydn * xbydn * xbydn) / 120
+      * (etap2 * 6 + 5 + tp2 * 28 - etap4 * 3 + tp2 * 8 * etap2 + tp4 * 24 - etap6 * 4
+        + tp2 * 4 * etap4 + tp2 * 24 * etap6)
+      - xbydn * xbydn * xbydn * (xbydn * xbydn * xbydn * xbydn) / 5040
+      * (tp2 * 662 + 61 + tp4 * 1320 + tp6 * 720))
+      / cp;
+
     return [
-      lambda,
-      phi
+      λ,
+      φ
     ];
   }
 
   public project(lon: number, lat: number): number[] {
-    const deltaLambda = -Angle.toRadians(-lon) - this.lambda0;
+    const deltaLambda = -Angle.toRadians(-lon) - this.λo;
     const phi = Angle.toRadians(lat);
 
     const sing = 2e-9;
@@ -185,8 +181,8 @@ export class TransverseMercator extends ProjCS {
         * (1385. - t * t * 3111. + tSq * tSq * 543. - tSq * (tSq * tSq)));
     }
 
-    x = this.falseEasting + this.scaleFactor * x;
-    y = this.scaleFactor * y;
+    x = this.xo + this.ko * x;
+    y = this.ko * y;
     return [x, y];
   }
 
@@ -197,41 +193,6 @@ export class TransverseMercator extends ProjCS {
     return point;
   }
 
-  private m(phi: number): number {
-    return this.a * ((1 - this.eSq / 4 - 3 * this.ePow4 / 64 - 5 * this.ePow6 / 256) * phi
-      - (3 * this.eSq / 8 + 3 * this.ePow4 / 32 + 45 * this.ePow6 / 1024) * Math.sin(2 * phi)
-      + (15 * this.ePow4 / 256 + 45 * this.ePow6 / 1024) * Math.sin(4 * phi)
-      - 35 * this.ePow6 / 3072 * Math.sin(6 * phi));
-  }
-
-  public projectUsgs(lon: number, lat: number): number[] {
-    const lambda = Angle.toRadians(lon);
-    const phi = Angle.toRadians(lat);
-
-    const cosPhi = Math.cos(phi);
-    const sinPhi = Math.sin(phi);
-    const tanPhi = Math.tan(phi);
-
-    const nu = this.a / Math.sqrt(1 - this.eSq * sinPhi * sinPhi);
-    const t = tanPhi * tanPhi;
-    const tSq = t * t;
-    const c = this.ePrimeSq * cosPhi * cosPhi;
-    const cSq = c * c;
-    const a1 = (lambda - this.lambda0) * cosPhi;
-    const a1Pow2 = a1 * a1;
-    const a1Pow3 = a1Pow2 * a1;
-    const a1Pow4 = a1Pow2 * a1Pow2;
-    const a1Pow5 = a1Pow4 * a1;
-    const a1Pow6 = a1Pow4 * a1Pow2;
-    const x = this.x0 + this.k0 * nu * (a1 + (1 - t + c) * a1Pow3 / 6
-      + (5 - 18 * t + tSq + 72 * c - 58 * this.ePrimeSq) * a1Pow5 / 120);
-
-    const m = this.m(phi);
-    const y = this.y0
-      + this.k0 * (m - this.m0 + nu * tanPhi * (a1Pow2 / 2 + (5 - t + 9 * c + 4 * cSq) * a1Pow4 / 24
-        + (61 - 58 * t + tSq + 600 * c - 330 * this.ePrimeSq) * a1Pow6 / 720));
-    return [x, y];
-  }
 
   public sinPhi(x1: number, y1: number, x2: number, y2: number): number {
     const phi1 = this.inverseRadians(x1, y1)[1];
@@ -243,7 +204,7 @@ export class TransverseMercator extends ProjCS {
   public ttCorrection(x1: number, y1: number, x2: number, y2: number): number {
     const a = this.a;
     const b = this.b;
-    const x0 = this.falseEasting;
+    const x0 = this.xo;
     const sinPhi = this.sinPhi(x1, y1, x2, y2);
 
     const xi = x1 - x0;
@@ -264,8 +225,8 @@ export class TransverseMercator extends ProjCS {
   public lineScaleFactor(x1: number, y1: number, x2: number, y2: number): number {
     const a = this.a;
     const b = this.b;
-    const x0 = this.falseEasting;
-    const sf = this.scaleFactor;
+    const x0 = this.xo;
+    const sf = this.ko;
 
     const sinPhi = this.sinPhi(x1, y1, x2, y2);
 
