@@ -17,7 +17,6 @@
     "publish-do": "ng-packagr -p ng-package.json; cd dist; npm pack; cd ..; npm publish dist",
     "deploy-gh-pages": "ng build --prod --base-href 'https://revolsys.github.io/revolsys-angular-coordinate-system/'; angular-cli-ghpages"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "~5.2.9",
     "@angular/cdk": "~5.2.4",
