@@ -69,10 +69,24 @@ export class ProjCS extends CS {
   }
 
   public inverse(x: number, y: number): number[] {
+    const point = this.inverseRadians(x, y);
+    point[0] = Angle.toDegrees(point[0]);
+    point[1] = Angle.toDegrees(point[1]);
+    return point;
+  }
+
+  public inverseRadians(x: number, y: number): number[] {
     throw new Error('Inverse operation not supported');
   }
 
   public project(lon: number, lat: number): number[] {
-    throw new Error('Project operation not supported');
+    const λ = Angle.toRadians(lon);
+    const φ = Angle.toRadians(lat);
+    return this.projectRadians(λ, φ);
   }
+
+  public projectRadians(λ: number, φ: number): number[] {
+    throw new Error('Inverse operation not supported');
+  }
+
 }

@@ -79,13 +79,13 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
     //        y: '50'
     //      },
     //    });
-    //    this.form.patchValue({
-    //      targetCs: CSI.utmN(10),
-    //      sourcePoint: {
-    //        x: '120 13 04.80242W',
-    //        y: '55 44 41.39955N'
-    //      },
-    //    });
+    this.form.patchValue({
+      targetCs: CSI.utmN(10),
+      sourcePoint: {
+        x: '120 13 04.80242W',
+        y: '55 44 41.39955N'
+      },
+    });
 
     //    this.form.patchValue({
     //      sourceCs: CSI.utmN(10),

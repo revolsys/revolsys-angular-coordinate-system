@@ -4,6 +4,7 @@ import {GeoCS} from './GeoCS';
 import {ProjCS} from './ProjCS';
 import {AlbersConicEqualArea} from './AlbersConicEqualArea';
 import {TransverseMercator} from './TransverseMercator';
+import {TransverseMercatorThomas} from './TransverseMercatorThomas';
 
 export class CSI {
   private static utmNCS: {[zone: number]: TransverseMercator} = {};
@@ -17,7 +18,7 @@ export class CSI {
   static utmN(zone: number): TransverseMercator {
     let utm = CSI.utmNCS[zone];
     if (!utm) {
-      utm = new TransverseMercator(26900 + zone, `NAD83 / UTM zone ${zone}N`, CSI.NAD83, 0, -183 + zone * 6, 0.9996, 500000, 0);
+      utm = new TransverseMercatorThomas(26900 + zone, `NAD83 / UTM zone ${zone}N`, CSI.NAD83, 0, -183 + zone * 6, 0.9996, 500000, 0);
       CSI.utmNCS[zone] = utm;
     }
     return utm;
