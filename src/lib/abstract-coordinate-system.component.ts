@@ -1,16 +1,17 @@
-import {Angle} from "./cs/Angle";
-import {CS} from "./cs/CS";
+import {Angle} from './cs/Angle';
+import {CS} from './cs/CS';
 import {Input} from '@angular/core';
 import {GeoCS} from './cs/GeoCS';
 import {Numbers} from './cs/Numbers';
 import {CSI} from './cs/CSI';
 
 export class AbstractCoordinateSystemComponent {
-  @Input('cs')
-  cs: CS = CSI.NAD83;
+  get cs(): CS {
+    return CSI.NAD83;
+  }
 
   @Input()
-  public angleFormat: string
+  public angleFormat: string;
 
   constructor(angleFormat?: string
   ) {
@@ -34,35 +35,43 @@ export class AbstractCoordinateSystemComponent {
     }
   }
 
-  formatX(value: number): string {
-    if (value) {
-      if (this.cs instanceof GeoCS) {
-        if ('DMS' === this.angleFormat) {
-          return Angle.toDegreesMinutesSecondsLon(value, 5);
+  formatX(value: any): string {
+    if (typeof value === 'number') {
+      if (value) {
+        if (this.cs instanceof GeoCS) {
+          if ('DMS' === this.angleFormat) {
+            return Angle.toDegreesMinutesSecondsLon(value, 5);
+          } else {
+            return value.toString();
+          }
         } else {
-          return value.toString();
+          return value.toFixed(3);
         }
       } else {
-        return value.toFixed(3);
+        return '-';
       }
     } else {
-      return '-';
+      return value.toString();
     }
   }
 
-  formatY(value: number): string {
-    if (value) {
-      if (this.cs instanceof GeoCS) {
-        if ('DMS' === this.angleFormat) {
-          return Angle.toDegreesMinutesSecondsLat(value, 5);
+  formatY(value: any): string {
+    if (typeof value === 'number') {
+      if (value) {
+        if (this.cs instanceof GeoCS) {
+          if ('DMS' === this.angleFormat) {
+            return Angle.toDegreesMinutesSecondsLat(value, 5);
+          } else {
+            return value.toString();
+          }
         } else {
-          return value.toString();
+          return value.toFixed(3);
         }
       } else {
-        return value.toFixed(3);
+        return '-';
       }
     } else {
-      return '-';
+      return value.toString();
     }
   }
 }

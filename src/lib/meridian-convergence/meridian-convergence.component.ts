@@ -1,12 +1,12 @@
-import {AbstractCoordinateSystemComponent} from "../abstract-coordinate-system.component";
-import {Angle} from "../cs/Angle";
-import {CS} from "../cs/CS";
-import {GeoCS} from "../cs/GeoCS";
-import {ProjCS} from "../cs/ProjCS";
-import {CSI} from "../cs/CSI";
-import {TransverseMercator} from "../cs/TransverseMercator";
+import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
+import {Angle} from '../cs/Angle';
+import {CS} from '../cs/CS';
+import {GeoCS} from '../cs/GeoCS';
+import {ProjCS} from '../cs/ProjCS';
+import {CSI} from '../cs/CSI';
+import {TransverseMercator} from '../cs/TransverseMercator';
 import {Component, OnInit} from '@angular/core';
-import {FormGroup, FormBuilder} from "@angular/forms";
+import {FormGroup, FormBuilder} from '@angular/forms';
 
 @Component({
   selector: 'rs-cs-meridian-convergence',
@@ -20,6 +20,10 @@ import {FormGroup, FormBuilder} from "@angular/forms";
 })
 export class MeridianConvergenceComponent extends AbstractCoordinateSystemComponent implements OnInit {
   private static UTM_10 = CSI.utmN(10);
+
+  get cs(): CS {
+    return this.geoCoordinateSystem;
+  }
 
   geoCoordinateSystems: CS[] = [CSI.NAD83];
 

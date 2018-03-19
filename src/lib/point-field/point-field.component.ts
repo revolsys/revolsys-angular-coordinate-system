@@ -1,6 +1,6 @@
 import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import {FormGroup, FormBuilder} from '@angular/forms';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CS} from '../cs/CS';
 import {CSI} from '../cs/CSI';
 import {GeoCS} from '../cs/GeoCS';
@@ -11,6 +11,17 @@ import {GeoCS} from '../cs/GeoCS';
   styleUrls: ['./point-field.component.css']
 })
 export class PointFieldComponent extends AbstractCoordinateSystemComponent implements OnInit {
+  private _cs: CS = CSI.NAD83;
+
+  get cs(): CS {
+    return this._cs;
+  }
+
+  @Input()
+  set cs(cs: CS) {
+    this._cs = cs;
+    this.setValidators();
+  }
 
   @Input('parentForm')
   parentForm: FormGroup;
@@ -21,7 +32,7 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
   pointForm: FormGroup;
 
   @Input()
-  editable = true;
+  readonly = false;
 
   @Input()
   floatLabel = 'auto';
@@ -36,6 +47,22 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
   @Input()
   required = false;
 
+  get x(): string {
+    const coordinate = this.pointForm.value['x'];
+    return this.formatX(coordinate);
+  }
+
+  set x(x: string) {
+  }
+
+  get y(): string {
+    const coordinate = this.pointForm.value['y'];
+    return this.formatY(coordinate);
+  }
+
+  set y(y: string) {
+  }
+
   constructor( @Inject(FormBuilder) private fb: FormBuilder) {
     super();
   }
@@ -46,11 +73,14 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
     }
     const value = this.parentForm.value[this.name];
     this.pointForm = <FormGroup>this.parentForm.controls[this.name];
-    if (!this.pointForm) {
+    if (this.pointForm) {
+      this.setValidators();
+    } else {
       this.pointForm = this.fb.group({
         'x': null,
         'y': null
       });
+      this.setValidators();
       this.parentForm.addControl(this.name, this.pointForm);
       const newValue = {};
       newValue[this.name] = this.pointForm.value;
@@ -58,33 +88,42 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
     }
   }
 
-  get x(): string {
-    const coordinate = this.pointForm.value['x'];
-    if (this.editable) {
-      return coordinate;
-    } else {
-      return this.formatX(coordinate)
+  getErrorMessage(form: FormGroup, controlName: string): string {
+    const messages = [];
+    const control = form.controls[controlName];
+    if (control.hasError('required')) {
+      messages.push('Required');
     }
+    const patternError = control.getError('pattern');
+    if (patternError) {
+      messages.push('Invalid value');
+    }
+    return messages.join(', ');
   }
 
-  set x(x: string) {
-    if (this.editable) {
-      this.pointForm.patchValue({'x': x});
-    }
-  }
-
-  get y(): string {
-    const coordinate = this.pointForm.value['y'];
-    if (this.editable) {
-      return coordinate;
-    } else {
-      return this.formatY(coordinate)
-    }
-  }
-
-  set y(y: string) {
-    if (this.editable) {
-      this.pointForm.patchValue({'y': y});
+  private setValidators() {
+    const cs = this.cs;
+    const form = this.pointForm;
+    if (form && cs) {
+      const controlX = form.controls['x'];
+      const controlY = form.controls['y'];
+      const validatorsX = [];
+      const validatorsY = [];
+      if (this.required) {
+        validatorsX.push(Validators.required);
+        validatorsY.push(Validators.required);
+      }
+      if (cs instanceof GeoCS) {
+        validatorsX.push(Validators.pattern(/^-?\d{1,3}[\*° ](\d{1,2}[ '](\d{1,2}(\.\d:{1,6})?"?$)?)?/));
+        validatorsY.push(Validators.pattern(/^-?\d{1,2}[\*° ](\d{1,2}[ '](\d{1,2}(\.\d:{1,6})?"?$)?)?/));
+      } else {
+        validatorsX.push(Validators.pattern(/^-?\d+(\.\d{1,3})?$/));
+        validatorsY.push(Validators.pattern(/^-?\d+(\.\d{1,3})?$/));
+      }
+      controlX.setValidators(validatorsX);
+      controlX.updateValueAndValidity();
+      controlY.setValidators(validatorsY);
+      controlY.updateValueAndValidity();
     }
   }
 

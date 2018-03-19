@@ -6,14 +6,14 @@ import {
   Validators
 } from '@angular/forms';
 import {Angle} from '../cs/Angle';
-import {CS} from "../cs/CS";
+import {CS} from '../cs/CS';
 import {Ellipsoid} from '../cs/Ellipsoid';
 import {GeoCS} from '../cs/GeoCS';
 import {CSI} from '../cs/CSI';
 import {Numbers} from '../cs/Numbers';
-import {ProjCS} from "../cs/ProjCS";
-import {TransverseMercator} from "../cs/TransverseMercator";
-import {ActivatedRoute} from "@angular/router";
+import {ProjCS} from '../cs/ProjCS';
+import {TransverseMercator} from '../cs/TransverseMercator';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'rs-cs-line-metrics',
@@ -23,27 +23,28 @@ import {ActivatedRoute} from "@angular/router";
 export class LineMetricsComponent extends AbstractCoordinateSystemComponent implements OnInit {
 
   calculationFieldsByName = {
-    "All": ["fromPoint", "fromHeight", "heightOfInstrument", "heightOfTarget", "toPoint", "toHeight", "distance", "xi", "eta"],
-    "Distance and Angles": ["fromPoint", "toPoint"],
-    "Line Scale Factor/T-t Correction": ["fromPoint", "toPoint"],
-    "Distance Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "heightOfInstrument", "heightOfTarget", "toPoint", "toHeight", "distance"],
-    "Distance Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "toPoint", "toHeight"],
-    "Direction Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "observedDirection"],
-    "Direction Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "reducedDirection"],
-    "Azimuth Reduction to the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight", "astronomicAzimuth"],
-    "Azimuth Reduction from the Ellipsoid": ["fromPoint", "fromHeight", "xi", "eta", "toPoint", "toHeight"]
+    'All': ['fromPoint', 'fromHeight', 'heightOfInstrument', 'heightOfTarget', 'toPoint', 'toHeight', 'distance', 'xi', 'eta'],
+    'Distance and Angles': ['fromPoint', 'toPoint'],
+    'Line Scale Factor/T-t Correction': ['fromPoint', 'toPoint'],
+    'Distance Reduction to the Ellipsoid': ['fromPoint', 'fromHeight', 'heightOfInstrument', 'heightOfTarget',
+      'toPoint', 'toHeight', 'distance'],
+    'Distance Reduction from the Ellipsoid': ['fromPoint', 'fromHeight', 'toPoint', 'toHeight'],
+    'Direction Reduction to the Ellipsoid': ['fromPoint', 'fromHeight', 'xi', 'eta', 'toPoint', 'toHeight', 'observedDirection'],
+    'Direction Reduction from the Ellipsoid': ['fromPoint', 'fromHeight', 'xi', 'eta', 'toPoint', 'toHeight', 'reducedDirection'],
+    'Azimuth Reduction to the Ellipsoid': ['fromPoint', 'fromHeight', 'xi', 'eta', 'toPoint', 'toHeight', 'astronomicAzimuth'],
+    'Azimuth Reduction from the Ellipsoid': ['fromPoint', 'fromHeight', 'xi', 'eta', 'toPoint', 'toHeight']
   };
 
   calculationNames = [
-    "All",
-    "Distance and Angles",
-    "Line Scale Factor/T-t Correction",
-    "Distance Reduction to the Ellipsoid",
-    "Distance Reduction from the Ellipsoid",
-    "Direction Reduction to the Ellipsoid",
-    "Direction Reduction from the Ellipsoid",
-    "Azimuth Reduction to the Ellipsoid",
-    "Azimuth Reduction from the Ellipsoid"
+    'All',
+    'Distance and Angles',
+    'Line Scale Factor/T-t Correction',
+    'Distance Reduction to the Ellipsoid',
+    'Distance Reduction from the Ellipsoid',
+    'Direction Reduction to the Ellipsoid',
+    'Direction Reduction from the Ellipsoid',
+    'Azimuth Reduction to the Ellipsoid',
+    'Azimuth Reduction from the Ellipsoid'
   ];
 
   form: FormGroup;
@@ -119,7 +120,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       }),
       toHeight: ['', [Validators.min(0), Validators.max(5000)]],
       distance: ['', [Validators.min(0), Validators.max(3500000)]],
-      cs: this.cs,
+      cs: CSI.NAD83,
       reducedDirection: null,
       astronomicAzimuth: null,
       observedDirection: null
@@ -138,7 +139,6 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     } else if (cs instanceof ProjCS) {
       geoCS = cs.geoCS;
     }
-    this.cs = data.cs;
     const x1 = cs.toNumber(data.fromPoint.x);
     const y1 = cs.toNumber(data.fromPoint.y);
     const x2 = cs.toNumber(data.toPoint.x);
@@ -188,9 +188,11 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     const observedDirection = Angle.toDecimalDegrees(data.observedDirection);
     if (this.isCalculationValid('Distance Reduction to the Ellipsoid')) {
       this.horizontalScaleFactor = ellipsoid.horizontalEllipsoidFactor(lon1, lat1, height1, lon2, lat2, height2, distance);
-      this.spatialEllipsoidalDistance = ellipsoid.spatialDistance(lon1, lat1, height1, heightOfInstrument, heightOfTarget, lon2, lat2, height2, distance);
+      this.spatialEllipsoidalDistance = ellipsoid.spatialDistance(lon1, lat1, height1, heightOfInstrument, heightOfTarget,
+        lon2, lat2, height2, distance);
     } else {
       this.horizontalScaleFactor = null;
+      this.spatialEllipsoidalDistance = null;
     }
     if (this.isCalculationValid('Distance Reduction from the Ellipsoid')) {
       this.spatialDistance = ellipsoid.distanceMetresZ(lon1, lat1, height1, lon2, lat2, height2);
@@ -198,7 +200,8 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       this.spatialDistance = null;
     }
     if (this.isCalculationValid('Direction Reduction to the Ellipsoid')) {
-      this.ellipsoidDirection = ellipsoid.ellipsoidDirection(lon1, lat1, height1, xi, eta, lon2, lat2, height2, 0, 0, -4.5, observedDirection);
+      this.ellipsoidDirection = ellipsoid.ellipsoidDirection(lon1, lat1, height1, xi, eta,
+        lon2, lat2, height2, 0, 0, -4.5, observedDirection);
     } else {
       this.ellipsoidDirection = null;
     }
@@ -244,26 +247,26 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     //      },
     //    });
 
-    this.form.patchValue({
-      fromPoint: {
-        x: '-135 55 55.123456',
-        y: '55 55 55.123456'
-      },
-      fromHeight: 12.345,
-      toPoint: {
-        x: '-135 55 54.123456',
-        y: '55 55 54.123456'
-      },
-      toHeight: 56.789,
-      xi: 10,
-      eta: 10,
-      reducedDirection: 60,
-      astronomicAzimuth: 60,
-      observedDirection: 60,
-      heightOfInstrument: 23.456,
-      heightOfTarget: 34.567,
-      distance: 12.345
-    });
+    //    this.form.patchValue({
+    //      fromPoint: {
+    //        x: '-135 55 55.123456',
+    //        y: '55 55 55.123456'
+    //      },
+    //      fromHeight: 12.345,
+    //      toPoint: {
+    //        x: '-135 55 54.123456',
+    //        y: '55 55 54.123456'
+    //      },
+    //      toHeight: 56.789,
+    //      xi: 10,
+    //      eta: 10,
+    //      reducedDirection: 60,
+    //      astronomicAzimuth: 60,
+    //      observedDirection: 60,
+    //      heightOfInstrument: 23.456,
+    //      heightOfTarget: 34.567,
+    //      distance: 12.345
+    //    });
 
     //    this.form.patchValue({
     //      fromPoint: {

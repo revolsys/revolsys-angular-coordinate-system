@@ -88,7 +88,7 @@ export class Ellipsoid {
     const cu1cu2 = cu1 * cu2;
 
     let iter = 0;
-    let dlon = lambda2 - lambda1;
+    const dlon = lambda2 - lambda1;
     if ((Math.abs(dlon - Math.PI)) < sing && Math.abs(phi1) < sing && Math.abs(phi2) < sing) {
       return null;
     }
@@ -118,8 +118,8 @@ export class Ellipsoid {
         ctsm = csig - su1su2 * 2. / calph2;
       }
       ctsm2 = ctsm * ctsm;
-      let c = f / 16. * calph2 * (f * (4. - calph2 * 3.) + 4.);
-      let dlasup = dlon + (1. - c) * f * salpha * (sig + c * ssig * (ctsm + c *
+      const c = f / 16. * calph2 * (f * (4. - calph2 * 3.) + 4.);
+      const dlasup = dlon + (1. - c) * f * salpha * (sig + c * ssig * (ctsm + c *
         csig * (ctsm2 * 2. - 1.)));
       if ((Math.abs(dlasup - dlas)) < sing) {
         break;
@@ -197,22 +197,22 @@ export class Ellipsoid {
       sig1 = Math.atan2(su / cu, ca12);
     }
 
-    let sa = cu * sa12;
-    let sa2 = sa * sa;
-    let alpha = Math.asin(sa);
-    let ca = Math.cos(alpha);
-    let ca2 = 1. - sa2;
+    const sa = cu * sa12;
+    const sa2 = sa * sa;
+    const alpha = Math.asin(sa);
+    const ca = Math.cos(alpha);
+    const ca2 = 1. - sa2;
 
-    let usq = ca2 * (a * a - b2) / b2;
+    const usq = ca2 * (a * a - b2) / b2;
 
-    let a3 = usq / 16384. * (usq * (usq * (320. - usq * 175.) - 768.) + 4096.) +
+    const a3 = usq / 16384. * (usq * (usq * (320. - usq * 175.) - 768.) + 4096.) +
       1.;
-    let b4 = usq / 1024. * (usq * (usq * (74. - usq * 47.) - 128.) + 256.);
+    const b4 = usq / 1024. * (usq * (usq * (74. - usq * 47.) - 128.) + 256.);
 
 
     let iter = 0;
-    let tsig1 = sig1 * 2.;
-    let soba = s12 / b / a3;
+    const tsig1 = sig1 * 2.;
+    const soba = s12 / b / a3;
     let sig = soba;
     let ddsig = 0.;
     let csig = 0;
@@ -220,16 +220,16 @@ export class Ellipsoid {
     let ctsm;
     let ctsm2 = 0;
     do {
-      let tsigm = tsig1 + sig;
+      const tsigm = tsig1 + sig;
       ctsm = Math.cos(tsigm);
       ctsm2 = ctsm * ctsm;
       ssig = Math.sin(sig);
-      let ssig2 = ssig * ssig;
+      const ssig2 = ssig * ssig;
       csig = Math.cos(sig);
-      let delsig = b4 * ssig * (ctsm + b4 / 4. * (csig * (ctsm2 * 2. - 1.) - b4 /
+      const delsig = b4 * ssig * (ctsm + b4 / 4. * (csig * (ctsm2 * 2. - 1.) - b4 /
         6. * ctsm * (ssig2 * 4. - 3.) * (ctsm2 * 4. - 3.)));
       sig = soba + delsig;
-      ctsm2 = ddsig - delsig
+      ctsm2 = ddsig - delsig;
       if (Math.abs(ctsm2) < sing) {
         break;
       }
@@ -240,14 +240,14 @@ export class Ellipsoid {
       }
     } while (true);
 
-    let sucs = su * csig;
-    let cuss = cu * ssig;
-    let suss = su * ssig;
-    let cucs = cu * csig;
+    const sucs = su * csig;
+    const cuss = cu * ssig;
+    const suss = su * ssig;
+    const cucs = cu * csig;
 
     let phi2 = 0;
     let dnum = sucs + cuss * ca12;
-    let d__1 = suss - cucs * ca12;
+    const d__1 = suss - cucs * ca12;
     let den = omf * Math.sqrt(sa2 + d__1 * d__1);
     if (Math.abs(dnum) > sing || Math.abs(den) > sing) {
       phi2 = Math.atan2(dnum, den);
@@ -261,8 +261,8 @@ export class Ellipsoid {
     }
 
 
-    let c = f / 16. * ca2 * (f * (4. - ca2 * 3.) + 4.);
-    let dlam = dlas - (1. - c) * f * sa * (sig + c * ssig * (ctsm + c * csig * (
+    const c = f / 16. * ca2 * (f * (4. - ca2 * 3.) + 4.);
+    const dlam = dlas - (1. - c) * f * sa * (sig + c * ssig * (ctsm + c * csig * (
       ctsm2 * 2. - 1.)));
     let lambda2 = lambda1 + dlam;
     if (lambda2 < 0.) {
@@ -376,7 +376,7 @@ export class Ellipsoid {
     const s12 = this.distanceMetresRadians(lambda1, phi1, lambda2, phi2);
 
     // Always 0 as dh = 0
-    const c1 = 0;// (-(xsi) * Math.sin(a12) + eta * Math.cos(a12)) * 0 / sqrt(ssq - 0 * 0);
+    const c1 = 0; // (-(xsi) * Math.sin(a12) + eta * Math.cos(a12)) * 0 / sqrt(ssq - 0 * 0);
 
     const cosPhi2 = Math.cos(phi2);
     const c2 = h2 / mm * esq * Math.sin(a12) * Math.cos(a12) * (cosPhi2 * cosPhi2);
@@ -391,7 +391,8 @@ export class Ellipsoid {
     return geodeticAzimuth;
   }
 
-  public horizontalEllipsoidFactor(lon1: number, lat1: number, h1: number, lon2: number, lat2: number, h2: number, spatialDistance: number): number {
+  public horizontalEllipsoidFactor(lon1: number, lat1: number, h1: number,
+    lon2: number, lat2: number, h2: number, spatialDistance: number): number {
     const lambda1 = Angle.toRadians(lon1);
     const phi1 = Angle.toRadians(lat1);
     const lambda2 = Angle.toRadians(lon2);
@@ -400,7 +401,8 @@ export class Ellipsoid {
       lambda2, phi2, h2, spatialDistance);
   }
 
-  public horizontalEllipsoidFactorRadians(lambda1: number, phi1: number, h1: number, lambda2: number, phi2: number, h2: number, spatialDistance: number): number {
+  public horizontalEllipsoidFactorRadians(lambda1: number, phi1: number, h1: number,
+    lambda2: number, phi2: number, h2: number, spatialDistance: number): number {
     const distanceAndAngles = this.vincentyInverse(lambda1, phi1, lambda2, phi2);
     const a12 = distanceAndAngles[1];
     const a21 = distanceAndAngles[2];
@@ -414,7 +416,8 @@ export class Ellipsoid {
     }
   }
 
-  public spatialDistance(lon1: number, lat1: number, h1: number, heightOfInstrument: number, heightOfTarget: number, lon2: number, lat2: number, h2: number, spatialDistance: number): number {
+  public spatialDistance(lon1: number, lat1: number, h1: number, heightOfInstrument: number, heightOfTarget: number,
+    lon2: number, lat2: number, h2: number, spatialDistance: number): number {
     const lambda1 = Angle.toRadians(lon1);
     const phi1 = Angle.toRadians(lat1);
     const lambda2 = Angle.toRadians(lon2);
@@ -423,7 +426,8 @@ export class Ellipsoid {
       phi2, h2, spatialDistance);
   }
 
-  public spatialDistanceRadians(lambda1: number, phi1, h1: number, heightOfInstrument: number, heightOfTarget: number, lambda2: number, phi2, h2: number, spatialDistance: number): number {
+  public spatialDistanceRadians(lambda1: number, phi1, h1: number, heightOfInstrument: number, heightOfTarget: number,
+    lambda2: number, phi2, h2: number, spatialDistance: number): number {
 
     const a12 = this.azimuthRadians(lambda1, phi1, lambda2, phi2);
     const a21 = this.azimuthRadians(lambda2, phi2, lambda1, phi1);
@@ -492,7 +496,8 @@ export class Ellipsoid {
     return spatialDirection + c1 + c2 + c3;
   }
 
-  public slopeDistance(lon1: number, lat1: number, h1: number, lon2: number, lat2: number, h2: number, x0: number, y0: number, z0: number): number {
+  public slopeDistance(lon1: number, lat1: number, h1: number, lon2: number, lat2: number, h2: number,
+    x0: number, y0: number, z0: number): number {
     const lambda1 = Angle.toRadians(lon1);
     const phi1 = Angle.toRadians(lat1);
     const lambda2 = Angle.toRadians(lon2);
@@ -500,7 +505,8 @@ export class Ellipsoid {
     return this.slopeDistanceRadians(lambda1, phi1, h1, lambda2, phi2, h2, x0, y0, z0);
   }
 
-  public slopeDistanceRadians(lambda1: number, phi1: number, h1: number, lambda2: number, phi2: number, h2: number, x0: number, y0: number, z0: number): number {
+  public slopeDistanceRadians(lambda1: number, phi1: number, h1: number, lambda2: number, phi2: number, h2: number,
+    x0: number, y0: number, z0: number): number {
     const p1 = this.toCartesian(lambda1, phi1, h1, x0, y0, z0);
     const p2 = this.toCartesian(lambda2, phi2, h2, x0, y0, z0);
 
@@ -627,7 +633,8 @@ export class Ellipsoid {
       }
       const C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
       lastLon = lon;
-      lon = deltaLambda + (1 - C) * f * sinAlpha * (Sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+      lon = deltaLambda + (1 - C) * f * sinAlpha *
+        (Sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
     } while (Math.abs(lon - lastLon) > 1e-12 && --iterationLimit > 0);
     if (iterationLimit === 0) {
       throw new Error('Formula failed to converge');
@@ -692,7 +699,8 @@ export class Ellipsoid {
       }
       const C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
       lastLon = lon;
-      lon = deltaLambda + (1 - C) * f * sinAlpha * (Sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+      lon = deltaLambda + (1 - C) * f * sinAlpha *
+        (Sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
     } while (Math.abs(lon - lastLon) > 1e-12 && --iterationLimit > 0);
     if (iterationLimit === 0) {
       throw new Error('Formula failed to converge');
@@ -845,18 +853,18 @@ export class Ellipsoid {
       sigma1 = Math.atan2(su / cu, cosangle);
     }
 
-    let sa = cu * sinangle;
-    let sa2 = sa * sa;
-    let alpha = Math.asin(sa);
-    let ca = Math.cos(alpha);
-    let ca2 = 1. - sa2;
+    const sa = cu * sinangle;
+    const sa2 = sa * sa;
+    const alpha = Math.asin(sa);
+    const ca = Math.cos(alpha);
+    const ca2 = 1. - sa2;
 
-    let uSq = ca2 * (a * a - b2) / b2;
+    const uSq = ca2 * (a * a - b2) / b2;
     const A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
     const B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
 
     let iter = 0;
-    let tsigma1 = sigma1 * 2.;
+    const tsigma1 = sigma1 * 2.;
     const soba = distance / b / A;
     let sigma = soba;
     let lastSigma;
@@ -884,10 +892,10 @@ export class Ellipsoid {
       }
     } while (true);
 
-    let sucs = su * cosSigma;
-    let cuss = cu * sinSigma;
-    let suss = su * sinSigma;
-    let cucs = cu * cosSigma;
+    const sucs = su * cosSigma;
+    const cuss = cu * sinSigma;
+    const suss = su * sinSigma;
+    const cucs = cu * cosSigma;
 
     let phi2 = 0;
     let dnum = sucs + cuss * cosangle;
@@ -905,8 +913,8 @@ export class Ellipsoid {
     }
 
 
-    let c = f / 16. * ca2 * (f * (4. - ca2 * 3.) + 4.);
-    let dlam = dlas - (1. - c) * f * sa * (sigma + c * sinSigma * (cos2Sigma + c * cosSigma * (
+    const c = f / 16. * ca2 * (f * (4. - ca2 * 3.) + 4.);
+    const dlam = dlas - (1. - c) * f * sa * (sigma + c * sinSigma * (cos2Sigma + c * cosSigma * (
       cos2SigmaSq * 2. - 1.)));
     let lambda2 = lambda1 + dlam;
     if (lambda2 < 0) {

@@ -1,7 +1,7 @@
 import {Angle} from './Angle';
 import {ProjCS} from './ProjCS';
 import {GeoCS} from './GeoCS';
-import {TransverseMercator} from "./TransverseMercator";
+import {TransverseMercator} from './TransverseMercator';
 
 export class TransverseMercatorUsgs extends TransverseMercator {
 

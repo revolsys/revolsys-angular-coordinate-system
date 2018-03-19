@@ -25,17 +25,17 @@
 			  <div class="flexRowToColumn">
 			    <rs-cs-coordinate-system-field formControlName="cs">
 			    </rs-cs-coordinate-system-field>
-			  
-				  <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From">
+			   
+				  <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From" [required]="true">
 				  </rs-cs-point-field>  
 			
 			    <mat-form-field class="distance">
-			      <input matInput formControlName="distance" placeholder="Distance">
+			      <input matInput formControlName="distance" placeholder="Distance" required>
 			      <mat-hint>metres</mat-hint>
 			    </mat-form-field>
 			    
 			    <mat-form-field class="azimuth">
-			      <input matInput formControlName="azimuth" placeholder="Azimuth From -> To">
+			      <input matInput formControlName="azimuth" placeholder="Azimuth From -> To" required>
 			      <mat-hint><span matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
 			      or <span matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal</span></mat-hint>
 			    </mat-form-field>
@@ -47,7 +47,7 @@
           <mat-panel-title>Result</mat-panel-title>
         </mat-expansion-panel-header>
 			  <div class="flexRowToColumn"> 
-				  <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" [angleFormat]="angleFormat" [editable]="false" prefix="To">
+				  <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" [angleFormat]="angleFormat" [readonly]="true" prefix="To">
 				  </rs-cs-point-field>  
 			
 			    <mat-form-field class="azimuth-result">

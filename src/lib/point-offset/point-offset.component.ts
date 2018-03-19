@@ -7,8 +7,9 @@ import {
 } from '@angular/forms';
 import {Angle} from '../cs/Angle';
 import {Ellipsoid} from '../cs/Ellipsoid';
-import {GeoCS} from '../cs/GeoCS';
+import {CS} from '../cs/CS';
 import {CSI} from '../cs/CSI';
+import {GeoCS} from '../cs/GeoCS';
 
 @Component({
   selector: 'rs-cs-point-offset',
@@ -16,11 +17,14 @@ import {CSI} from '../cs/CSI';
   styleUrls: ['./point-offset.component.css']
 })
 export class PointOffsetComponent extends AbstractCoordinateSystemComponent implements OnInit {
+  get cs(): CS {
+    return this.form.controls['cs'].value;
+  }
+
   form: FormGroup;
 
   resultForm = this.fb.group({
-    toPoint: this.fb.group({x: null, y: null}),
-    cs: this.cs
+    toPoint: this.fb.group({x: null, y: null})
   });
 
   hasResult = false;
@@ -35,32 +39,34 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
 
   private createForm() {
     this.form = this.fb.group({
-      point: this.fb.group({x: null, y: null}),
-      toPoint: this.fb.group({x: null, y: null}),
-      azimuth: null,
-      distance: null,
-      cs: this.cs
+      cs: CSI.NAD83,
+      point: this.fb.group({
+        x: null,
+        y: null
+      }),
+      azimuth: ['', Validators.required],
+      distance: ['', Validators.required]
     });
     this.form.valueChanges.subscribe(data => {
-      this.cs = data.cs;
-      const x = this.cs.toNumber(data.point.x);
-      const y = this.cs.toNumber(data.point.y);
+      const cs: CS = data.cs;
+      const x = cs.toNumber(data.point.x);
+      const y = cs.toNumber(data.point.y);
 
       const distance = parseFloat(data.distance);
       const azimuth = Angle.toDecimalDegrees(data.azimuth);
-      if (x != null && y != null && distance != null && azimuth != null) {
+      if (this.form.valid) {
         this.hasResult = true;
 
         let x2;
         let y2;
-        const result = this.cs.pointOffset(x, y, distance, azimuth);
+        const result = cs.pointOffset(x, y, distance, azimuth);
         x2 = result[0];
         y2 = result[1];
-        if (this.cs instanceof GeoCS) {
-          const angleResult = this.cs.ellipsoid.vincenty(Angle.toRadians(-x), Angle.toRadians(y), distance, Angle.toRadians(azimuth));
+        if (cs instanceof GeoCS) {
+          const angleResult = cs.ellipsoid.vincenty(Angle.toRadians(-x), Angle.toRadians(y), distance, Angle.toRadians(azimuth));
           this.azimuth2 = Angle.toDegrees360(angleResult[2]);
         } else {
-          this.azimuth2 = this.cs.angle(x2, y2, x, y);
+          this.azimuth2 = cs.angle(x2, y2, x, y);
         }
         this.resultForm.patchValue({
           toPoint: {
@@ -76,6 +82,7 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
 
   ngOnInit() {
     this.form.patchValue({
+      cs: CSI.utmN(7),
       point: {
         x: '-109 0 0.12345',
         y: '45 0 0.12345'
