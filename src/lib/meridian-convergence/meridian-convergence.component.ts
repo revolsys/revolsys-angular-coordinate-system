@@ -56,8 +56,8 @@ export class MeridianConvergenceComponent extends AbstractCoordinateSystemCompon
     this.form.valueChanges.subscribe(data => {
       this.geoCoordinateSystem = data.geoCoordinateSystem;
       this.projCoordinateSystem = data.projCoordinateSystem;
-      const lon = this.geoCoordinateSystem.toNumber(data.point.x);
-      const lat = this.geoCoordinateSystem.toNumber(data.point.y);
+      const lon = this.geoCoordinateSystem.toX(data.point.x);
+      const lat = this.geoCoordinateSystem.toY(data.point.y);
 
       if (lon != null && lat != null) {
         this.hasResult = true;

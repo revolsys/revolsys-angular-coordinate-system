@@ -60,7 +60,11 @@ export class ProjCS extends CS {
     ];
   }
 
-  toNumber(text: string): number {
+  toX(text: string): number {
+    return parseFloat(text);
+  }
+
+  toY(text: string): number {
     return parseFloat(text);
   }
 

@@ -1,4 +1,5 @@
 import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
+import {Angle} from '../cs/Angle';
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CS} from '../cs/CS';
@@ -114,8 +115,8 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
         validatorsY.push(Validators.required);
       }
       if (cs instanceof GeoCS) {
-        validatorsX.push(Validators.pattern(/^-?\d{1,3}[\*° ](\d{1,2}[ '](\d{1,2}(\.\d:{1,6})?"?$)?)?/));
-        validatorsY.push(Validators.pattern(/^-?\d{1,2}[\*° ](\d{1,2}[ '](\d{1,2}(\.\d:{1,6})?"?$)?)?/));
+        validatorsX.push(Validators.pattern(Angle.RE_LON));
+        validatorsY.push(Validators.pattern(Angle.RE_LAT));
       } else {
         validatorsX.push(Validators.pattern(/^-?\d+(\.\d{1,3})?$/));
         validatorsY.push(Validators.pattern(/^-?\d+(\.\d{1,3})?$/));

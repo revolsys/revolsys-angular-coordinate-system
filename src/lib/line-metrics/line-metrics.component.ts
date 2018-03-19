@@ -3,7 +3,9 @@ import {Component, OnInit} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  Validators
+  Validators,
+  AbstractFormGroupDirective,
+  AbstractControl
 } from '@angular/forms';
 import {Angle} from '../cs/Angle';
 import {CS} from '../cs/CS';
@@ -59,7 +61,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
 
   azimuth2Ellipsoid: number;
 
-  distanceEllipsoid: number;
+  distanceEllipsoid: number = null;
 
   ellipsoidDirection: number;
 
@@ -139,10 +141,10 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     } else if (cs instanceof ProjCS) {
       geoCS = cs.geoCS;
     }
-    const x1 = cs.toNumber(data.fromPoint.x);
-    const y1 = cs.toNumber(data.fromPoint.y);
-    const x2 = cs.toNumber(data.toPoint.x);
-    const y2 = cs.toNumber(data.toPoint.y);
+    const x1 = cs.toX(data.fromPoint.x);
+    const y1 = cs.toY(data.fromPoint.y);
+    const x2 = cs.toX(data.toPoint.x);
+    const y2 = cs.toY(data.toPoint.y);
     const ellipsoid = geoCS.ellipsoid;
     const lonLat1 = cs.convertPoint(geoCS, x1, y1);
     const lon1 = lonLat1[0];
@@ -288,16 +290,31 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
         for (const fieldName of fieldNames) {
           const control = this.form.controls[fieldName];
           if (control != null) {
-            const value = control.value;
-            if (control.invalid || value === '' || value === null) {
+            if (!this.isControlValid(control)) {
               return false;
             }
           }
         }
+        console.log(fieldNames);
         return true;
       }
     }
     return false;
+  }
+
+  private isControlValid(control: AbstractControl): boolean {
+    const value = control.value;
+    if (control.invalid || value === '' || value === null) {
+      return false;
+    } else if (control instanceof FormGroup) {
+      for (const subControl of Object.values(control.controls)) {
+        if (!this.isControlValid(subControl)) {
+          return false;
+        }
+      }
+    } else {
+      return true;
+    }
   }
 
   get calculationName(): string {

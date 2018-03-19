@@ -49,8 +49,8 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
     });
     this.form.valueChanges.subscribe(data => {
       const cs: CS = data.cs;
-      const x = cs.toNumber(data.point.x);
-      const y = cs.toNumber(data.point.y);
+      const x = cs.toX(data.point.x);
+      const y = cs.toY(data.point.y);
 
       const distance = parseFloat(data.distance);
       const azimuth = Angle.toDecimalDegrees(data.azimuth);
@@ -81,14 +81,14 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
   }
 
   ngOnInit() {
-    this.form.patchValue({
-      cs: CSI.utmN(7),
-      point: {
-        x: '-109 0 0.12345',
-        y: '45 0 0.12345'
-      },
-      azimuth: '12 34 5.68',
-      distance: '1.234'
-    });
+    //    this.form.patchValue({
+    //      cs: CSI.utmN(7),
+    //      point: {
+    //        x: '-109 0 0.12345',
+    //        y: '45 0 0.12345'
+    //      },
+    //      azimuth: '12 34 5.68',
+    //      distance: '1.234'
+    //    });
   }
 }

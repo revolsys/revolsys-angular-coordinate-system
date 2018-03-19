@@ -53,8 +53,8 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
     this.form.valueChanges.subscribe(data => {
       const sourceCs: CS = data.sourceCs;
       this.targetCs = data.targetCs;
-      const x1 = sourceCs.toNumber(data.sourcePoint.x);
-      const y1 = sourceCs.toNumber(data.sourcePoint.y);
+      const x1 = sourceCs.toX(data.sourcePoint.x);
+      const y1 = sourceCs.toY(data.sourcePoint.y);
       if (x1 != null && y1 != null) {
         const targetPoint = sourceCs.convertPoint(this.targetCs, x1, y1);
         if (targetPoint) {

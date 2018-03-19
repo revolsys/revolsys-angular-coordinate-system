@@ -1,4 +1,8 @@
 export class Angle {
+  static readonly RE_DMS = /^\s*(-?(?:360|3[0-5]\d|[0-2]?\d{1-2}|0?\d{1,2}))(?:\.(\d+)?|(?:[*° ](60|[0-5]?\d)(?:[ '](60|[0-5]?\d(?:\.\d{1,6})?)"?)?)?)\s*$/;
+  static readonly RE_LAT = /^\s*(-?(?:90|[0-8]?\d))(?:\.(\d+)?|(?:[*° ](60|[0-5]?\d)(?:[ '](60|[0-5]?\d(?:\.\d{1,6})?)"?)?)?([NS])?)\s*$/;
+  static readonly RE_LON = /^\s*(-?(?:180|1[0-7]\d|0?\d{1,2}))(?:\.(\d+)?|(?:[*° ](60|[0-5]?\d)(?:[ '](60|[0-5]?\d(?:\.\d{1,6})?)"?)?)?([WE])?)\s*$/;
+
   static RAD_DEGREE = 0.01745329251994328;
 
   static PI_TIMES_2 = 2.0 * Math.PI;
@@ -57,43 +61,38 @@ export class Angle {
     return radians * 180.0 / Math.PI;
   }
 
-  static toDecimalDegrees(text: string): number {
-    if (text) {
-      text = text.toString().trim();
-
-      if (text.length > 0) {
-        let negative = false;
-        if (text.endsWith('S') || text.endsWith('W')) {
-          negative = true;
-          text = text.substring(0, text.length).trim();
-        } else if (text.endsWith('E') || text.endsWith('N')) {
-          text = text.substring(0, text.length).trim();
-        }
-        const parts = text.split(/[\*°'":\s]+/);
-        let decimalDegrees = 0;
-        if (parts.length > 0) {
-          decimalDegrees = parseFloat(parts[0]);
-          if (decimalDegrees < 0) {
-            negative = true;
-            decimalDegrees = -decimalDegrees;
-          }
-        }
-        if (parts.length > 1) {
-          const minutes = parseFloat(parts[1]) / 60;
-          if (!isNaN(minutes)) {
-            decimalDegrees += minutes;
-          }
-        }
-        if (parts.length > 2) {
-          const seconds = parseFloat(parts[2]) / 3600;
-          if (!isNaN(seconds)) {
-            decimalDegrees += seconds;
-          }
-        }
-        if (negative) {
-          return -decimalDegrees;
+  static toDecimalDegrees(dms: any, regEx = Angle.RE_DMS): number {
+    if (dms) {
+      const dmsString = dms.toString().trim();
+      const match = dmsString.match(regEx);
+      if (match) {
+        const degrees = match[1];
+        const decimal = match[2];
+        if (decimal) {
+          return parseFloat(degrees + '.' + decimal);
         } else {
-          return decimalDegrees;
+          const minutes = match[3];
+          const seconds = match[4];
+          const direction = match[5];
+          let negative = direction === 'S' || direction === 'W';
+          let result = parseFloat(degrees);
+          if (result < 0) {
+            negative = true;
+            result = -result;
+          }
+
+          if (minutes) {
+            result += parseFloat(minutes) / 60;
+          }
+          if (seconds) {
+            result += parseFloat(seconds) / 3600;
+          }
+
+          if (negative) {
+            return -result;
+          } else {
+            return result;
+          }
         }
       }
     }

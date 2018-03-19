@@ -18,7 +18,9 @@ export abstract class CS {
 
   abstract pointOffset(x: number, y: number, distance: number, angle: number): number[];
 
-  abstract toNumber(text: string);
+  abstract toX(text: string);
+
+  abstract toY(text: string);
 
   abstract convertPoint(cs: CS, x: number, y: number): number[];
 

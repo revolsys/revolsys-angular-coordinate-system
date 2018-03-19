@@ -65,8 +65,12 @@ export class GeoCS extends CS {
     }
   }
 
-  toNumber(text: string): number {
-    return Angle.toDecimalDegrees(text);
+  toX(text: string): number {
+    return Angle.toDecimalDegrees(text, Angle.RE_LON);
+  }
+
+  toY(text: string): number {
+    return Angle.toDecimalDegrees(text, Angle.RE_LAT);
   }
 
   toRadians(value: number): number {
