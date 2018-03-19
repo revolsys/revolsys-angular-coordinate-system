@@ -20,6 +20,7 @@ import {
   MatTooltipModule
 } from '@angular/material';
 
+import {AngleFieldComponent} from './angle-field/angle-field.component';
 import {CoordinateSystemConversionComponent} from './coordinate-system-conversion/coordinate-system-conversion.component';
 import {CsFieldComponent} from './cs-field/cs-field.component';
 import {LineMetricsComponent} from './line-metrics/line-metrics.component';
@@ -28,6 +29,7 @@ import {PointFieldComponent} from './point-field/point-field.component';
 import {PointOffsetComponent} from './point-offset/point-offset.component';
 
 const components = [
+  AngleFieldComponent,
   CoordinateSystemConversionComponent,
   CsFieldComponent,
   LineMetricsComponent,

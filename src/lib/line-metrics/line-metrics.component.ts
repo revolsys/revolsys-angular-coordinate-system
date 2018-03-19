@@ -25,7 +25,8 @@ import {ActivatedRoute} from '@angular/router';
 export class LineMetricsComponent extends AbstractCoordinateSystemComponent implements OnInit {
 
   calculationFieldsByName = {
-    'All': ['fromPoint', 'fromHeight', 'heightOfInstrument', 'heightOfTarget', 'toPoint', 'toHeight', 'distance', 'xi', 'eta'],
+    'All': ['fromPoint', 'fromHeight', 'heightOfInstrument', 'heightOfTarget', 'toPoint',
+      'toHeight', 'distance', 'xi', 'eta', 'observedDirection', 'reducedDirection', 'astronomicAzimuth'],
     'Distance and Angles': ['fromPoint', 'toPoint'],
     'Line Scale Factor/T-t Correction': ['fromPoint', 'toPoint'],
     'Distance Reduction to the Ellipsoid': ['fromPoint', 'fromHeight', 'heightOfInstrument', 'heightOfTarget',

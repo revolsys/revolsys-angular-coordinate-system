@@ -1,0 +1,23 @@
+<ng-container *ngIf="!readonly">
+	<div class="flexFields" [formGroup]="form">
+	  <mat-form-field [floatLabel]="floatLabel">
+	    <input matInput formControlName="angle" [placeholder]="placeholder" [required]="required">
+	    <mat-hint>
+	      <span *ngIf="!angleFormat || angleFormat === 'DMS'" matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
+	      <span *ngIf="!angleFormat"> or </span>
+	      <span *ngIf="!angleFormat || angleFormat === 'decimalDegrees'" matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal Degrees</span>
+	    </mat-hint>
+	    <mat-error *ngIf="control.invalid">{{errorMessage}}</mat-error>
+	   </mat-form-field>
+	</div>
+</ng-container>
+
+<ng-container *ngIf="readonly">
+    <mat-form-field [floatLabel]="floatLabel">
+      <input matInput [(ngModel)]="angle" [placeholder]="placeholder" readonly>
+      <mat-hint>
+        <span *ngIf="angleFormat === 'DMS'" matTooltip="Degrees Minutes Seconds: 9:9:9.999, 9°9'9.9&quot;, or 9 9 9.9" matTooltipPosition="after">DMS</span>
+        <span *ngIf="!angleFormat || angleFormat === 'decimalDegrees'" matTooltip="Decimal Degrees 9.9" matTooltipPosition="after">Decimal Degrees</span>
+      </mat-hint>
+     </mat-form-field>
+</ng-container>

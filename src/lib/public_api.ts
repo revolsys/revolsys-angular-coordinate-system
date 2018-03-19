@@ -8,6 +8,7 @@ export * from './cs/Numbers';
 export * from './cs/ProjCS';
 export * from './cs/TransverseMercator';
 
+export * from './angle-field/angle-field.component';
 export * from './meridian-convergence/meridian-convergence.component';
 export * from './coordinate-system-conversion/coordinate-system-conversion.component';
 export * from './cs-field/cs-field.component';
