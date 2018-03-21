@@ -7,52 +7,52 @@
         <mat-expansion-panel-header>
           <mat-panel-title>Description</mat-panel-title>
         </mat-expansion-panel-header>
-		    <p>Given a point, distance, and azimuth (bearing) calculate the location of a new point.</p>
-		   
-		    <p>For <a href="https://en.wikipedia.org/wiki/Geographic_coordinate_system">geographic coordinate systems</a>
-		    the <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae#Direct_Problem">Vincenty's direct problem formula</a>
-		    and coordinate system's ellipsoid is used. Latitude and Longitude coordinates, can be entered as either
-		    Degrees, Minutes, and Seconds (DMS) or Decimal degrees. DMS can be in any of the formats 9:9:9.999, 9°9'9.9", or 9 9 9.9.</p>
-		    
-		    <p>For <a href="https://en.wikipedia.org/wiki/Map_projection">projected coordinate systems</a>
-		    the <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem#Pythagorean_trigonometric_identity">Pythagorean trigonometric identity formula</a> are used.</p>
+        <p>Given a point, distance, and azimuth (bearing) calculate the location of a new point.</p>
+       
+        <p>For <a href="https://en.wikipedia.org/wiki/Geographic_coordinate_system">geographic coordinate systems</a>
+        the <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae#Direct_Problem">Vincenty's direct problem formula</a>
+        and coordinate system's ellipsoid is used. Latitude and Longitude coordinates, can be entered as either
+        Degrees, Minutes, and Seconds (DMS) or Decimal degrees. DMS can be in any of the formats 9:9:9.999, 9°9'9.9", or 9 9 9.9.</p>
+        
+        <p>For <a href="https://en.wikipedia.org/wiki/Map_projection">projected coordinate systems</a>
+        the <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem#Pythagorean_trigonometric_identity">Pythagorean trigonometric identity formula</a> are used.</p>
       </mat-expansion-panel>
     
       <mat-expansion-panel expanded="true" [formGroup]="form">
         <mat-expansion-panel-header>
           <mat-panel-title>Input</mat-panel-title>
         </mat-expansion-panel-header>
-			  <div class="flexRowToColumn">
-			    <rs-cs-coordinate-system-field formControlName="cs">
-			    </rs-cs-coordinate-system-field>
-			   
-				  <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From" [required]="true">
-				  </rs-cs-point-field>  
-			
-			    <mat-form-field class="distance">
-			      <input matInput formControlName="distance" placeholder="Distance" required>
-			      <mat-hint>metres</mat-hint>
-			    </mat-form-field>
-			    
-			    <rs-cs-angle-field formControlName="azimuth" placeholder="Azimuth From -> To" required class="azimuth">
+        <div class="flexRowToColumn">
+          <rs-cs-coordinate-system-field formControlName="cs">
+          </rs-cs-coordinate-system-field>
+         
+          <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From" [required]="true">
+          </rs-cs-point-field>  
+      
+          <mat-form-field class="distance">
+            <input matInput formControlName="distance" placeholder="Distance" required>
+            <mat-hint>metres</mat-hint>
+          </mat-form-field>
+          
+          <rs-cs-angle-field formControlName="azimuth" placeholder="Azimuth From -> To" required class="azimuth">
           </rs-cs-angle-field>
- 			  </div>
+         </div>
       </mat-expansion-panel>
     
       <mat-expansion-panel expanded="true" [formGroup]="form" *ngIf="hasResult">
         <mat-expansion-panel-header>
           <mat-panel-title>Result</mat-panel-title>
         </mat-expansion-panel-header>
-			  <div class="flexRowToColumn"> 
-				  <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" [angleFormat]="angleFormat" [readonly]="true" prefix="To">
-				  </rs-cs-point-field>  
-			
-			    <mat-form-field class="azimuth-result">
-			      <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" >
-			      <mat-hint>{{angleFormat}}</mat-hint>
-			    </mat-form-field>
-			  </div>
-			</mat-expansion-panel>
-	  </mat-accordion>
-	</mat-card-content>
+        <div class="flexRowToColumn"> 
+          <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" [angleFormat]="angleFormat" [readonly]="true" prefix="To">
+          </rs-cs-point-field>  
+      
+          <mat-form-field class="azimuth-result">
+            <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" >
+            <mat-hint>{{angleFormat}}</mat-hint>
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
 </mat-card>

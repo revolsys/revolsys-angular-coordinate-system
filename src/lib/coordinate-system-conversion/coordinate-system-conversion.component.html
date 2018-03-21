@@ -14,23 +14,23 @@
         <mat-expansion-panel-header>
           <mat-panel-title>Input</mat-panel-title>
         </mat-expansion-panel-header>
-			  <div class="flexRowToColumn">
-			    <rs-cs-coordinate-system-field formControlName="sourceCs" placeholder="Source Coordinate System"></rs-cs-coordinate-system-field>
-			    <rs-cs-coordinate-system-field formControlName="targetCs" placeholder="Target Coordinate System"></rs-cs-coordinate-system-field>
-			
-			    <rs-cs-point-field [parentForm]="form" name="sourcePoint" [cs]="cs" prefix="Source">
-			    </rs-cs-point-field>  
-			  </div>
+        <div class="flexRowToColumn">
+          <rs-cs-coordinate-system-field formControlName="sourceCs" placeholder="Source Coordinate System"></rs-cs-coordinate-system-field>
+          <rs-cs-coordinate-system-field formControlName="targetCs" placeholder="Target Coordinate System"></rs-cs-coordinate-system-field>
+      
+          <rs-cs-point-field [parentForm]="form" name="sourcePoint" [cs]="cs" prefix="Source">
+          </rs-cs-point-field>  
+        </div>
       </mat-expansion-panel>
 
       <mat-expansion-panel expanded="true" *ngIf="hasResult">
         <mat-expansion-panel-header>
           <mat-panel-title>Result</mat-panel-title>
         </mat-expansion-panel-header>
-			  <div class="flexRowToColumn"> 
-			    <rs-cs-point-field [parentForm]="resultForm" name="targetPoint" [cs]="targetCs" [angleFormat]="angleFormat" prefix="Target" [readonly]="true">
-			    </rs-cs-point-field>  
-			  </div>
+        <div class="flexRowToColumn"> 
+          <rs-cs-point-field [parentForm]="resultForm" name="targetPoint" [cs]="targetCs" [angleFormat]="angleFormat" prefix="Target" [readonly]="true">
+          </rs-cs-point-field>  
+        </div>
       </mat-expansion-panel>
 
     </mat-accordion>  

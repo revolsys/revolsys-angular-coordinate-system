@@ -1,5 +1,5 @@
 <ng-container *ngIf="!readonly">
-	<div *ngIf="isGeographic" class="flexFields" [formGroup]="pointForm">
+  <div *ngIf="isGeographic" class="flexFields" [formGroup]="pointForm">
 
     <rs-cs-angle-field formControlName="y" angleValueType="latitude" placeholder="{{prefix}}Latitude" [floatLabel]="floatLabel" [required]="required" [angleFormat]="angleFormat">
     </rs-cs-angle-field>
@@ -7,7 +7,7 @@
     <rs-cs-angle-field formControlName="x" angleValueType="longitude" placeholder="{{prefix}}Longitude" [floatLabel]="floatLabel" [required]="required" [angleFormat]="angleFormat">
     </rs-cs-angle-field>
 
-	</div>
+  </div>
   <div *ngIf="!isGeographic" class="flexFields" [formGroup]="pointForm">
     <mat-form-field [floatLabel]="floatLabel">
       <input matInput formControlName="x" placeholder="{{prefix}}X (Easting)" [required]="required">

@@ -115,8 +115,6 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
         validatorsY.push(Validators.required);
       }
       if (cs instanceof GeoCS) {
-        validatorsX.push(Validators.pattern(Angle.RE_LON));
-        validatorsY.push(Validators.pattern(Angle.RE_LAT));
       } else {
         validatorsX.push(Validators.pattern(/^-?\d+(\.\d{1,3})?$/));
         validatorsY.push(Validators.pattern(/^-?\d+(\.\d{1,3})?$/));

@@ -308,7 +308,8 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     if (control.invalid || value === '' || value === null) {
       return false;
     } else if (control instanceof FormGroup) {
-      for (const subControl of Object.values(control.controls)) {
+      for (const fieldName of Object.keys(control.controls)) {
+        const subControl = control.controls[fieldName];
         if (!this.isControlValid(subControl)) {
           return false;
         }
