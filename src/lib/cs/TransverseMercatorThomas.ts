@@ -154,7 +154,6 @@ export class TransverseMercatorThomas extends TransverseMercator {
         + deltaλPow4 * deltaλPow4 / 40320 * sinφ * (cosφ * cosφPow6)
         * (1385 - tanφPow2 * 3111 + tanφPow4 * 543 - tanφPow6));
     }
-    console.log(λ, y);
     x = this.xo + this.ko * x;
     y = this.ko * y;
     return [x, y];

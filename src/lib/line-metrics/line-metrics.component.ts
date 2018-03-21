@@ -296,7 +296,6 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
             }
           }
         }
-        console.log(fieldNames);
         return true;
       }
     }

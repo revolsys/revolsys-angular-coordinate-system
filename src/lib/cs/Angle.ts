@@ -65,9 +65,6 @@ export class Angle {
     if (dms) {
       const dmsString = dms.toString().trim();
       const match = dmsString.match(regEx);
-      console.log(regEx);
-      console.log(dmsString);
-      console.log(match);
       if (match) {
         const degrees = match[1];
         const decimal = match[2];
