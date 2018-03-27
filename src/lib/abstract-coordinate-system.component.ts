@@ -1,11 +1,15 @@
 import {Angle} from './cs/Angle';
 import {CS} from './cs/CS';
-import {Input} from '@angular/core';
+import {
+  Input,
+  Injector
+} from '@angular/core';
 import {GeoCS} from './cs/GeoCS';
 import {Numbers} from './cs/Numbers';
 import {CSI} from './cs/CSI';
+import {BaseComponent} from 'revolsys-angular-framework';
 
-export class AbstractCoordinateSystemComponent {
+export class AbstractCoordinateSystemComponent extends BaseComponent<any> {
   get cs(): CS {
     return CSI.NAD83;
   }
@@ -13,8 +17,12 @@ export class AbstractCoordinateSystemComponent {
   @Input()
   public angleFormat: string;
 
-  constructor(angleFormat?: string
+  constructor(
+    protected injector: Injector,
+    title: string,
+    angleFormat?: string
   ) {
+    super(injector, null, title);
     this.angleFormat = angleFormat;
   }
 

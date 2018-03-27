@@ -1,6 +1,6 @@
 {
   "name": "revolsys-angular-coordinate-system",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -17,7 +17,25 @@
     "publish-do": "ng-packagr -p ng-package.json; cd dist; npm pack; cd ..; npm publish dist",
     "deploy-gh-pages": "ng build --prod --base-href 'https://revolsys.github.io/revolsys-angular-coordinate-system/'; angular-cli-ghpages"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "@angular/animations": "5.2.x",
+    "@angular/cdk": "5.2.x",
+    "@angular/common": "5.2.x",
+    "@angular/compiler": "5.2.x",
+    "@angular/core": "5.2.x",
+    "@angular/forms": "5.2.x",
+    "@angular/http": "5.2.x",
+    "@angular/material": "5.2.x",
+    "@angular/platform-browser": "5.2.x",
+    "@angular/platform-server": "5.2.x",
+    "@angular/platform-browser-dynamic": "5.2.x",
+    "@angular/router": "5.2.x",
+    "revolsys-angular-framework": ">=1.0.0-beta.5",
+    "core-js": "2.5.x",
+    "rxjs": "5.5.x",
+    "zone.js": "0.8.x"
+  },
+  "devDependencies": {
     "@angular/animations": "~5.2.9",
     "@angular/cdk": "~5.2.4",
     "@angular/common": "~5.2.9",
@@ -28,16 +46,15 @@
     "@angular/material": "~5.2.4",
     "@angular/platform-browser": "~5.2.9",
     "@angular/platform-browser-dynamic": "~5.2.9",
+    "@angular/platform-server": "~5.2.9",
     "@angular/router": "~5.2.9",
     "angular-cli-ghpages": "^0.5.2",
     "core-js": "^2.5.3",
     "hammerjs": "^2.0.8",
-    "karma": "^2.0.0",
-    "rxjs": "^5.5.7",
+    "revolsys-angular-framework": "~1.0.0-beta.5",
+    "rxjs": "^5.5.8",
     "tslint": "^5.9.1",
-    "zone.js": "~0.8.19"
-  },
-  "devDependencies": {
+    "zone.js": "~0.8.19",
     "@angular/cli": "^1.7.3",
     "@angular/compiler-cli": "~5.2.9",
     "@angular/language-service": "~5.2.9",
@@ -45,15 +62,16 @@
     "@types/jasminewd2": "~2.0.2",
     "angular-ide": "^0.9.39",
     "codelyzer": "^4.0.1",
-    "jasmine-core": "~2.8.0",
+    "jasmine": "~3.1.0",
+    "jasmine-core": "~3.1.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~2.0.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
-    "karma-jasmine-html-reporter": "^0.2.2",
-    "ng-packagr": "^2.2.0",
-    "protractor": "~5.1.2",
+    "karma-jasmine-html-reporter": "~1.0.0",
+    "ng-packagr": "^2.4.1",
+    "protractor": "~5.3.0",
     "typescript": "~2.6.2"
   }
 }

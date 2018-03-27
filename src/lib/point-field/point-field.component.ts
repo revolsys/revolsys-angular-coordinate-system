@@ -1,6 +1,6 @@
 import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
 import {Angle} from '../cs/Angle';
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit, Injector} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CS} from '../cs/CS';
 import {CSI} from '../cs/CSI';
@@ -64,8 +64,8 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
   set y(y: string) {
   }
 
-  constructor( @Inject(FormBuilder) private fb: FormBuilder) {
-    super();
+  constructor( @Inject(Injector) protected injector: Injector, @Inject(FormBuilder) private fb: FormBuilder) {
+    super(injector, null);
   }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Injector} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -31,8 +31,10 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
 
   azimuth2: number;
 
-  constructor(private fb: FormBuilder) {
-    super('DMS');
+  constructor(
+    protected injector: Injector,
+    private fb: FormBuilder) {
+    super(injector, 'Point Offset', 'DMS');
     this.createForm();
   }
 

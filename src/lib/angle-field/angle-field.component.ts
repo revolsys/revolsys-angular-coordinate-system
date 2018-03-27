@@ -87,7 +87,7 @@ export class AngleFieldComponent implements ControlValueAccessor, OnInit, OnChan
   }
 
   @Input()
-  angleValueType: string = 'angle';
+  angleValueType = 'angle';
 
   @Input()
   public angleFormat: string;

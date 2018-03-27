@@ -1,5 +1,9 @@
 import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
-import {Component, OnInit} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Injector
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -102,10 +106,10 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
   lineScaleFactor: number;
 
   constructor(
+    protected injector: Injector,
     private fb: FormBuilder,
-    private route: ActivatedRoute
   ) {
-    super('DMS');
+    super(injector, 'Line Calculations', 'DMS');
     this.form = this.fb.group({
       calculationName: 'All',
       fromPoint: this.fb.group({
@@ -228,6 +232,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.route.queryParams.subscribe(params => {
       const calculationName = params['calculationName'];
       if (this.calculationNames.indexOf(calculationName) !== -1) {

@@ -22,6 +22,7 @@ import {
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {RevolsysAngularCoordinateSystemModule} from '../lib/revolsys-angular-coordinate-system.module';
+import {RevolsysAngularFrameworkModule} from 'revolsys-angular-framework';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,11 @@ import {RevolsysAngularCoordinateSystemModule} from '../lib/revolsys-angular-coo
     MatToolbarModule,
     MatTooltipModule,
     AppRoutingModule,
-    RevolsysAngularCoordinateSystemModule
+    RevolsysAngularCoordinateSystemModule,
+    RevolsysAngularFrameworkModule.forRoot({
+      basePath: '/pub/mascotw',
+      title: 'mascot'
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

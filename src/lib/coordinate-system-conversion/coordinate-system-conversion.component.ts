@@ -1,5 +1,9 @@
 import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
-import {Component, OnInit} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Injector
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,7 +24,11 @@ import {Numbers} from '../cs/Numbers';
 })
 export class CoordinateSystemConversionComponent extends AbstractCoordinateSystemComponent implements OnInit {
   get cs(): CS {
-    return this.form.controls['sourceCs'].value;
+    if (this.form) {
+      return this.form.controls['sourceCs'].value;
+    } else {
+      return null;
+    }
   }
 
   targetCs = CSI.BC_ALBERS;
@@ -36,8 +44,10 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
 
   hasResult = false;
 
-  constructor(private fb: FormBuilder) {
-    super('DMS');
+  constructor(
+    protected injector: Injector,
+    private fb: FormBuilder) {
+    super(injector, 'Coordinate System Conversion', 'DMS');
     this.form = this.fb.group({
       sourcePoint: this.fb.group({
         x: null,
@@ -47,7 +57,7 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
         x: null,
         y: null
       }),
-      sourceCs: this.cs,
+      sourceCs: CSI.NAD83,
       targetCs: this.targetCs
     });
     this.form.valueChanges.subscribe(data => {
@@ -78,6 +88,7 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
   }
 
   ngOnInit() {
+    super.ngOnInit();
     //    this.form.patchValue({
     //      sourcePoint: {
     //        x: '-121',

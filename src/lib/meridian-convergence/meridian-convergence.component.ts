@@ -5,7 +5,7 @@ import {GeoCS} from '../cs/GeoCS';
 import {ProjCS} from '../cs/ProjCS';
 import {CSI} from '../cs/CSI';
 import {TransverseMercator} from '../cs/TransverseMercator';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Injector} from '@angular/core';
 import {FormGroup, FormBuilder} from '@angular/forms';
 
 @Component({
@@ -41,8 +41,10 @@ export class MeridianConvergenceComponent extends AbstractCoordinateSystemCompon
 
   pointScaleFactor: number;
 
-  constructor(private fb: FormBuilder) {
-    super('DMS');
+  constructor(
+    protected injector: Injector,
+    private fb: FormBuilder) {
+    super(injector, 'Meridian Convergence/POINT SF', 'DMS');
     this.createForm();
   }
 
