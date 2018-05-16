@@ -107,9 +107,19 @@ export class Angle {
       text = '-';
       angle = -angle;
     }
-    const degrees = Math.floor(angle);
-    const minutes = Math.floor(angle * 60) % 60;
-    const seconds = angle * 3600 % 60;
+    let degrees = Math.floor(angle);
+    let minutes = Math.floor(angle * 60) % 60;
+    let seconds = angle * 3600 % 60;
+    if (secondsDecimalPlaces !== undefined) {
+      if (parseFloat(seconds.toFixed(secondsDecimalPlaces)) >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+          minutes = 0;
+          degrees++;
+        }
+      }
+    }
 
     text += degrees;
     text += ' ';

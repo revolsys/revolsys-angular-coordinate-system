@@ -66,7 +66,12 @@ export class GeoCS extends CS {
   }
 
   toX(text: string): number {
-    return Angle.toDecimalDegrees(text, Angle.RE_LON);
+    const degrees = Angle.toDecimalDegrees(text, Angle.RE_LON);
+    if (degrees > 0 && this.name == 'NAD83') {
+      return -degrees;
+    } else {
+      return degrees;
+    }
   }
 
   toY(text: string): number {

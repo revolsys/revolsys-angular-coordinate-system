@@ -1,5 +1,5 @@
 import {AbstractCoordinateSystemComponent} from '../abstract-coordinate-system.component';
-import {Component, OnInit, Injector} from '@angular/core';
+import {Component, OnInit, Injector, ChangeDetectorRef, AfterViewChecked} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -16,48 +16,81 @@ import {GeoCS} from '../cs/GeoCS';
   templateUrl: './point-offset.component.html',
   styleUrls: ['./point-offset.component.css']
 })
-export class PointOffsetComponent extends AbstractCoordinateSystemComponent implements OnInit {
+export class PointOffsetComponent extends AbstractCoordinateSystemComponent implements OnInit, AfterViewChecked {
+  private _cs: CS = CSI.NAD83;
+
   get cs(): CS {
-    return this.form.controls['cs'].value;
+    return this._cs;
   }
 
-  form: FormGroup;
-
-  resultForm = this.fb.group({
-    toPoint: this.fb.group({x: null, y: null})
+  private pointForm = this.fb.group({
+    cs: CSI.NAD83,
+    x: null,
+    y: null
   });
 
-  hasResult = false;
+  form = this.fb.group({
+    cs: CSI.NAD83,
+    point: this.pointForm,
+    azimuth: ['', Validators.required],
+    distance: ['', Validators.required]
+  });
+
+  resultForm = this.fb.group({
+    toPoint: this.fb.group({
+      cs: CSI.NAD83,
+      x: ['', Validators.required],
+      y: null
+    })
+  });
+
+  get distancePlaceholder(): string {
+    if (this.cs instanceof GeoCS) {
+      return 'Ellipsoidal Distance';
+    } else {
+      return 'Grid Distance';
+    }
+  }
+
+  get anglePlaceholder(): string {
+    if (this.cs instanceof GeoCS) {
+      return 'Azimuth';
+    } else {
+      return 'Bearing';
+    }
+  }
+
+  get hasResult(): boolean {
+    return this.form.valid;
+  }
 
   azimuth2: number;
 
   constructor(
     protected injector: Injector,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private cdRef: ChangeDetectorRef
+  ) {
     super(injector, 'Point Offset', 'DMS');
-    this.createForm();
   }
 
 
-  private createForm() {
-    this.form = this.fb.group({
-      cs: CSI.NAD83,
-      point: this.fb.group({
-        x: null,
-        y: null
-      }),
-      azimuth: ['', Validators.required],
-      distance: ['', Validators.required]
-    });
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
+  }
+
+  private initForm() {
     this.form.valueChanges.subscribe(data => {
       const cs: CS = data.cs;
+      if (this._cs !== cs) {
+        this._cs = cs;
+        this.pointForm.patchValue({'cs': cs});
+      }
       const x = cs.toX(data.point.x);
       const y = cs.toY(data.point.y);
       const distance = parseFloat(data.distance);
       const azimuth = Angle.toDecimalDegrees(data.azimuth);
       if (this.form.valid) {
-        this.hasResult = true;
-
         let x2;
         let y2;
         const result = cs.pointOffset(x, y, distance, azimuth);
@@ -71,17 +104,27 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
         }
         this.resultForm.patchValue({
           toPoint: {
-            x: x2,
-            y: y2
+            cs: cs,
+            x: cs.makePrecise(x2),
+            y: cs.makePrecise(y2)
           }
         });
       } else {
-        this.hasResult = false;
+        this.resultForm.patchValue({
+          toPoint: {
+            x: null,
+            y: null
+          }
+        });
       }
+    });
+    this.form.controls['cs'].valueChanges.subscribe(cs => {
+      this.pointForm.markAsPending();
     });
   }
 
   ngOnInit() {
+    this.initForm();
     //    this.form.patchValue({
     //      //      cs: CSI.utmN(7),
     //      point: {
@@ -90,6 +133,15 @@ export class PointOffsetComponent extends AbstractCoordinateSystemComponent impl
     //      },
     //      azimuth: '12 34 5.68',
     //      distance: '1.234'
+    //    });
+    //    this.form.patchValue({
+    //      cs: CSI.utmN(10),
+    //      point: {
+    //        x: '500000',
+    //        y: '5500000'
+    //      },
+    //      azimuth: '85',
+    //      distance: '0.01'
     //    });
   }
 }

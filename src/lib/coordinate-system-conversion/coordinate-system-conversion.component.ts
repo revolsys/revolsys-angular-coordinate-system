@@ -36,10 +36,11 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
   form: FormGroup;
 
   resultForm: FormGroup = this.fb.group({
-    targetPoint: {
+    targetPoint: this.fb.group({
+      cs: CSI.BC_ALBERS,
       x: null,
       y: null
-    }
+    })
   });
 
   hasResult = false;
@@ -50,22 +51,25 @@ export class CoordinateSystemConversionComponent extends AbstractCoordinateSyste
     super(injector, 'Coordinate System Conversion', 'DMS');
     this.form = this.fb.group({
       sourcePoint: this.fb.group({
-        x: null,
-        y: null
-      }),
-      targetPoint: this.fb.group({
+        cs: CSI.NAD83,
         x: null,
         y: null
       }),
       sourceCs: CSI.NAD83,
       targetCs: this.targetCs
     });
+    this.form.controls['sourceCs'].valueChanges.subscribe(cs => {
+      this.form.controls['sourcePoint'].patchValue({cs: cs});
+    });
+    this.form.controls['targetCs'].valueChanges.subscribe(cs => {
+      this.resultForm.controls['targetPoint'].patchValue({cs: cs});
+    });
     this.form.valueChanges.subscribe(data => {
       const sourceCs: CS = data.sourceCs;
       this.targetCs = data.targetCs;
-      const x1 = sourceCs.toX(data.sourcePoint.x);
-      const y1 = sourceCs.toY(data.sourcePoint.y);
-      if (x1 != null && y1 != null) {
+      if (this.form.valid) {
+        const x1 = sourceCs.toX(data.sourcePoint.x);
+        const y1 = sourceCs.toY(data.sourcePoint.y);
         const targetPoint = sourceCs.convertPoint(this.targetCs, x1, y1);
         if (targetPoint) {
           this.hasResult = true;

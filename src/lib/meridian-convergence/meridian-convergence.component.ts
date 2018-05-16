@@ -51,7 +51,11 @@ export class MeridianConvergenceComponent extends AbstractCoordinateSystemCompon
 
   private createForm() {
     this.form = this.fb.group({
-      point: this.fb.group({x: null, y: null}),
+      point: this.fb.group({
+        cs: this.geoCoordinateSystem,
+        x: null,
+        y: null
+      }),
       projCoordinateSystem: this.projCoordinateSystem,
       geoCoordinateSystem: this.geoCoordinateSystem
     });

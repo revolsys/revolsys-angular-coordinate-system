@@ -10,7 +10,8 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR,
   NG_VALIDATORS,
-  AbstractControl
+  AbstractControl,
+  Validator
 } from '@angular/forms';
 import {CS} from '../cs/CS';
 import {CSI} from '../cs/CSI';
@@ -19,11 +20,12 @@ import {GeoCS} from '../cs/GeoCS';
 export function createAngleValidator(angleValueType: string, required: boolean) {
   return function validateAngle(control: FormControl) {
     const value = control.value;
+    let result;
     if (value === null || value.length === 0) {
       if (required) {
-        return {'required': true};
+        result = {'required': true};
       } else {
-        return null;
+        result = null;
       }
     } else {
       let min;
@@ -43,20 +45,21 @@ export function createAngleValidator(angleValueType: string, required: boolean) 
         angle = Angle.toDecimalDegrees(value, Angle.RE_DMS);
       }
       if (angle == null) {
-        return {
+        result = {
           angleError: {
             angleValueType: angleValueType,
             actual: value
           }
         };
       } else if (angle < min) {
-        return {'min': {min: min, actual: value}};
+        result = {'min': {min: min, actual: value}};
       } else if (angle > max) {
-        return {'max': {max: max, actual: value}};
+        result = {'max': {max: max, actual: value}};
       } else {
-        return null;
+        result = null;
       }
     }
+    return result;
   };
 }
 
@@ -77,7 +80,7 @@ export function createAngleValidator(angleValueType: string, required: boolean) 
     }
   ]
 })
-export class AngleFieldComponent implements ControlValueAccessor, OnInit, OnChanges {
+export class AngleFieldComponent implements ControlValueAccessor, OnChanges, Validator {
 
   get angle(): string {
     return this.form.controls['angle'].value;
@@ -94,6 +97,8 @@ export class AngleFieldComponent implements ControlValueAccessor, OnInit, OnChan
 
   @Input('name')
   name: string;
+
+  errorMessage: string;
 
   @Input()
   floatLabel = 'auto';
@@ -115,37 +120,34 @@ export class AngleFieldComponent implements ControlValueAccessor, OnInit, OnChan
 
   private propagateChange: any = (_: any) => {};
 
-  constructor( @Inject(FormBuilder) private fb: FormBuilder) {
+  constructor(
+    @Inject(FormBuilder) private fb: FormBuilder,
+  ) {
     this.control = this.fb.control('', [(c: FormControl) => this.validate(c)]);
     this.form = this.fb.group({angle: this.control});
     this.control.valueChanges.subscribe(value => this.propagateChange(value));
-  }
-
-  ngOnInit(): void {
-    this.validateFn = createAngleValidator(this.angleValueType, this.required);
   }
 
   ngOnChanges(): void {
     this.validateFn = createAngleValidator(this.angleValueType, this.required);
   }
 
-  get errorMessage(): string {
+  getErrorMessage(errors): string {
     const messages = [];
-    const control = this.control;
-    if (control.hasError('required')) {
+    if (errors['required']) {
       messages.push('Required');
     }
 
-    const minError = control.getError('min');
+    const minError = errors['min'];
     if (minError) {
       messages.push(`< ${minError.min}`);
     }
 
-    const maxError = control.getError('max');
+    const maxError = errors['max'];
     if (maxError) {
       messages.push(`> ${maxError.max}`);
     }
-    const angleError = control.getError('angleError');
+    const angleError = errors['angleError'];
     if (angleError) {
       messages.push(`Invalid ${angleError.angleValueType}`);
     }
@@ -186,12 +188,17 @@ export class AngleFieldComponent implements ControlValueAccessor, OnInit, OnChan
     }
   }
 
-  validate(c: FormControl) {
-    if (this.validateFn) {
-      return this.validateFn(c);
-    } else {
-      return null;
+  validate(control: FormControl) {
+    let errors;
+    if (!this.readonly && this.validateFn) {
+      errors = this.validateFn(control);
     }
+    if (errors) {
+      this.errorMessage = this.getErrorMessage(errors);
+    } else {
+      this.errorMessage = null;
+    }
+    return errors;
   }
 
   registerOnChange(fn: any): void {

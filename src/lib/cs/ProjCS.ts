@@ -52,8 +52,8 @@ export class ProjCS extends CS {
 
   pointOffset(x: number, y: number, distance: number, angle: number): number[] {
     angle = Angle.toRadians(Angle.toCartesian(angle));
-    const x2 = this.makePrecise(x + distance * Math.cos(angle));
-    const y2 = this.makePrecise(y + distance * Math.sin(angle));
+    const x2 = x + distance * Math.cos(angle);
+    const y2 = y + distance * Math.sin(angle);
     return [
       x2,
       y2

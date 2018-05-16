@@ -66,6 +66,10 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
 
   azimuth2Ellipsoid: number;
 
+  get cs(): CS {
+    return this.form.controls['cs'].value;
+  }
+
   distanceEllipsoid: number = null;
 
   ellipsoidDirection: number;
@@ -113,6 +117,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
     this.form = this.fb.group({
       calculationName: 'All',
       fromPoint: this.fb.group({
+        cs: CSI.NAD83,
         x: ['', Validators.required],
         y: ['', Validators.required]
       }),
@@ -122,6 +127,7 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       heightOfInstrument: ['', [Validators.min(0), Validators.max(99.999)]],
       heightOfTarget: ['', [Validators.min(0), Validators.max(99.999)]],
       toPoint: this.fb.group({
+        cs: CSI.NAD83,
         x: ['', Validators.required],
         y: ['', Validators.required]
       }),
@@ -131,6 +137,10 @@ export class LineMetricsComponent extends AbstractCoordinateSystemComponent impl
       reducedDirection: null,
       astronomicAzimuth: null,
       observedDirection: null
+    });
+    this.form.controls['cs'].valueChanges.subscribe(cs => {
+      this.form.controls.fromPoint.patchValue({cs: cs});
+      this.form.controls.toPoint.patchValue({cs: cs});
     });
     this.form.valueChanges.subscribe(data => {
       this.calculate();

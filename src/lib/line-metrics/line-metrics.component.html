@@ -94,7 +94,7 @@
           </rs-cs-coordinate-system-field>
         </div>
         <div class="flexRowToColumn"> 
-          <rs-cs-point-field [parentForm]="form" name="fromPoint" [cs]="cs" prefix="From" required>
+          <rs-cs-point-field [parentForm]="form" name="fromPoint" prefix="From" required>
           </rs-cs-point-field>
           <mat-form-field *ngIf="isFieldVisible('fromHeight')">
             <input matInput formControlName="fromHeight" type="number" min="0" max="5000" placeholder="From Height Marker" />
@@ -124,7 +124,7 @@
           </mat-form-field>  
         </div>
         <div class="flexRowToColumn"> 
-          <rs-cs-point-field [parentForm]="form" name="toPoint" [cs]="cs" prefix="To" required>
+          <rs-cs-point-field [parentForm]="form" name="toPoint" prefix="To" required>
           </rs-cs-point-field>
           <mat-form-field *ngIf="isFieldVisible('toHeight')">
             <input matInput formControlName="toHeight" type="number" min="0" max="5000" placeholder="To Height Marker" />

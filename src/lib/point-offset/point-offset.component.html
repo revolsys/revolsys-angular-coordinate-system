@@ -26,29 +26,29 @@
           <rs-cs-coordinate-system-field formControlName="cs">
           </rs-cs-coordinate-system-field>
          
-          <rs-cs-point-field [parentForm]="form" name="point" [cs]="cs" prefix="From" [required]="true">
+          <rs-cs-point-field [parentForm]="form" name="point" prefix="From" [required]="true">
           </rs-cs-point-field>  
       
           <mat-form-field class="distance">
-            <input matInput formControlName="distance" placeholder="Distance" required>
+            <input matInput formControlName="distance" [placeholder]="distancePlaceholder" required>
             <mat-hint>metres</mat-hint>
           </mat-form-field>
           
-          <rs-cs-angle-field formControlName="azimuth" placeholder="Azimuth From -> To" required class="azimuth">
+          <rs-cs-angle-field formControlName="azimuth" placeholder="{{anglePlaceholder}} From -> To" required class="azimuth">
           </rs-cs-angle-field>
          </div>
       </mat-expansion-panel>
     
-      <mat-expansion-panel [expanded]="true" [formGroup]="form" *ngIf="hasResult">
+      <mat-expansion-panel [expanded]="true" *ngIf="hasResult">
         <mat-expansion-panel-header>
           <mat-panel-title>Result</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="flexRowToColumn"> 
-          <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [cs]="cs" [angleFormat]="angleFormat" [readonly]="true" prefix="To">
+          <rs-cs-point-field [parentForm]="resultForm" name="toPoint" [angleFormat]="angleFormat" [readonly]="true" prefix="To">
           </rs-cs-point-field>  
       
           <mat-form-field class="azimuth-result">
-            <input matInput [value]="formatAngle(azimuth2)" placeholder="Azimuth To -> From" >
+            <input matInput [value]="formatAngle(azimuth2)" placeholder="{{anglePlaceholder}} To -> From" >
             <mat-hint>{{angleFormat}}</mat-hint>
           </mat-form-field>
         </div>

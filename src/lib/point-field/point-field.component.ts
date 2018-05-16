@@ -14,16 +14,6 @@ import {GeoCS} from '../cs/GeoCS';
 export class PointFieldComponent extends AbstractCoordinateSystemComponent implements OnInit {
   private _cs: CS = CSI.NAD83;
 
-  get cs(): CS {
-    return this._cs;
-  }
-
-  @Input()
-  set cs(cs: CS) {
-    this._cs = cs;
-    this.setValidators();
-  }
-
   @Input('parentForm')
   parentForm: FormGroup;
 
@@ -37,6 +27,10 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
 
   @Input()
   floatLabel = 'auto';
+
+  get cs(): CS {
+    return this._cs;
+  }
 
   get isGeographic(): boolean {
     return this.cs instanceof GeoCS;
@@ -64,7 +58,10 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
   set y(y: string) {
   }
 
-  constructor( @Inject(Injector) protected injector: Injector, @Inject(FormBuilder) private fb: FormBuilder) {
+  constructor(
+    @Inject(Injector) protected injector: Injector,
+    @Inject(FormBuilder) private fb: FormBuilder,
+  ) {
     super(injector, null);
   }
 
@@ -75,9 +72,14 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
     const value = this.parentForm.value[this.name];
     this.pointForm = <FormGroup>this.parentForm.controls[this.name];
     if (this.pointForm) {
+      if (!this.pointForm.controls['cs']) {
+        this.pointForm.addControl('cs', this.fb.control(CSI.NAD83));
+      }
+      this._cs = this.pointForm.controls['cs'].value;
       this.setValidators();
     } else {
       this.pointForm = this.fb.group({
+        'cs': CSI.NAD83,
         'x': null,
         'y': null
       });
@@ -87,6 +89,10 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
       newValue[this.name] = this.pointForm.value;
       this.parentForm.patchValue(newValue);
     }
+    this.pointForm.controls['cs'].valueChanges.subscribe(data => {
+      this._cs = data;
+      this.setValidators();
+    });
   }
 
   getErrorMessage(form: FormGroup, controlName: string): string {
@@ -103,9 +109,9 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
   }
 
   private setValidators() {
-    const cs = this.cs;
     const form = this.pointForm;
-    if (form && cs) {
+    if (form) {
+      const cs = form.controls['cs'].value;
       const controlX = form.controls['x'];
       const controlY = form.controls['y'];
       const validatorsX = [];
@@ -120,8 +126,8 @@ export class PointFieldComponent extends AbstractCoordinateSystemComponent imple
         validatorsY.push(Validators.pattern(/^-?\d+(\.\d{1,3})?$/));
       }
       controlX.setValidators(validatorsX);
-      controlX.updateValueAndValidity();
       controlY.setValidators(validatorsY);
+      controlX.updateValueAndValidity();
       controlY.updateValueAndValidity();
     }
   }

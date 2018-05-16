@@ -27,7 +27,7 @@ export class AbstractCoordinateSystemComponent extends BaseComponent<any> {
   }
 
   formatAngle(value: number, decimalPlaces: number = -1): string {
-    if (value) {
+    if (typeof value === 'number') {
       if ('DMS' === this.angleFormat) {
         if (decimalPlaces < 0) {
           decimalPlaces = 2;
@@ -58,6 +58,8 @@ export class AbstractCoordinateSystemComponent extends BaseComponent<any> {
       } else {
         return '-';
       }
+    } else if (value === null) {
+      return '';
     } else {
       return value.toString();
     }
@@ -78,6 +80,8 @@ export class AbstractCoordinateSystemComponent extends BaseComponent<any> {
       } else {
         return '-';
       }
+    } else if (value === null) {
+      return '';
     } else {
       return value.toString();
     }
